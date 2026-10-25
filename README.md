@@ -40,11 +40,11 @@ See [Docs.md](Docs.md) for full feature documentation.
 - Download audio (audio only or extracted from video)
 - Download playlists (video or audio choices available)
 - Download images/clips/GIFs (from single items to massive albums)
-- Configurable SponsorBlock segment removal (main shortcut settings)
+- Configurable SponsorBlock segment removal (sponsor segments on by default in shortcut settings)
 - Support for both a-Shell and a-Shell Mini apps
 
 ## Build the Shortcut
-1. Run `make build` (or manually copy and sign each plist under `src/`)
+1. Run `make build` — runs `make verify`, regenerates quick shortcut plists, and re-signs `SW-DLT*.shortcut` at the repo root (commit those binaries when plist sources change).
 2. Source files: `src/SW-DLT.plist`, `src/SW-DLT-Audio.plist`, `src/SW-DLT-Video-720p.plist`
 3. Change the extension from `.plist` to `.shortcut` if signing manually
 4. Sign the shortcut with Apple (see "Ways to sign shortcuts" section below)

@@ -90,7 +90,7 @@ Official release on GitHub, avoid unknown sources!</string>
 								<key>WFValue</key>
 								<dict>
 									<key>Value</key>
-									<false/>
+									<true/>
 									<key>WFSerializationType</key>
 									<string>WFNumberSubstitutableState</string>
 								</dict>
@@ -331,7 +331,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 									<key>Value</key>
 									<dict>
 										<key>string</key>
-										<string>net00</string>
+										<string>hryamzik (fork; original by net00)</string>
 									</dict>
 									<key>WFSerializationType</key>
 									<string>WFTextTokenString</string>
@@ -355,7 +355,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 									<key>Value</key>
 									<dict>
 										<key>string</key>
-										<string>4.2.2</string>
+										<string>4.3.0</string>
 									</dict>
 									<key>WFSerializationType</key>
 									<string>WFTextTokenString</string>
@@ -991,7 +991,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 														<key>Value</key>
 														<dict>
 															<key>string</key>
-															<string>SW-DLT ("Shortcuts Wrapper for -DL Tools") is a shortcut that makes using yt-dlp and gallery-dl fast and simple. It is powered by a-Shell, a very powerful terminal emulator for iPhone/iPad. </string>
+															<string>SW-DLT ("Shortcuts Wrapper for -DL Tools") is a shortcut that makes using yt-dlp and gallery-dl fast and simple. It is powered by a-Shell, a very powerful terminal emulator for iPhone/iPad. This build is maintained at github.com/hryamzik/SW-DLT (fork of net00-1/SW-DLT).</string>
 														</dict>
 														<key>WFSerializationType</key>
 														<string>WFTextTokenString</string>
@@ -2884,7 +2884,7 @@ $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install chardet requests cer
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade --force-reinstall
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -c "import yt_dlp"
 echo 0 &gt; $HOME/Documents/SW-DLT/shortcut_update_ts.txt
-curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/fix/ios-run-payload-shell-args/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
+curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/main/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
 open shortcuts://
 clear &amp;&amp; cd
 exit</string>
@@ -3018,7 +3018,7 @@ exit</string>
 							</dict>
 						</dict>
 						<key>string</key>
-						<string>LATEST_VERSION="https://net00-1.github.io/SW-DLT/api/updates/latest.json"
+						<string>LATEST_VERSION="https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/main/api/updates/latest.json"
 WORKSPACE="$HOME/Documents/SW-DLT"
 LAST_CHECK_TS="$WORKSPACE/shortcut_update_ts.txt"
 CURRENT_DATE=$(date +%s)
@@ -7685,7 +7685,7 @@ URL: ￼</string>
         &lt;/div&gt;
         &lt;div class='footer'&gt;
         &lt;hr /&gt;
-            &lt;p&gt;Official release on GitHub. Avoid unknown sources!&lt;/p&gt;
+            &lt;p&gt;Official releases: &lt;a href='https://github.com/hryamzik/SW-DLT/releases'&gt;github.com/hryamzik/SW-DLT&lt;/a&gt;. Avoid unknown sources.&lt;/p&gt;
         &lt;/div&gt;
     &lt;/body&gt;
 &lt;/html&gt;</string>

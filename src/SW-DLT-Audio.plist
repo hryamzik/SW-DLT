@@ -21,7 +21,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>641B742E-0354-4159-9291-DC68985A9850</string>
+				<string>86273AC0-DE78-4A87-B361-4F15A41CBFAD</string>
 				<key>WFCondition</key>
 				<integer>101</integer>
 				<key>WFControlFlowMode</key>
@@ -79,7 +79,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>641B742E-0354-4159-9291-DC68985A9850</string>
+				<string>86273AC0-DE78-4A87-B361-4F15A41CBFAD</string>
 				<key>WFControlFlowMode</key>
 				<integer>1</integer>
 			</dict>
@@ -111,7 +111,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>641B742E-0354-4159-9291-DC68985A9850</string>
+				<string>86273AC0-DE78-4A87-B361-4F15A41CBFAD</string>
 				<key>WFControlFlowMode</key>
 				<integer>2</integer>
 			</dict>
@@ -122,7 +122,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>B090E9CD-F5B9-42EB-86B3-9701BFE45E63</string>
+				<string>5C138319-596F-4BFD-A5CB-1D2B076AAF36</string>
 				<key>WFCondition</key>
 				<integer>101</integer>
 				<key>WFControlFlowMode</key>
@@ -180,7 +180,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>B090E9CD-F5B9-42EB-86B3-9701BFE45E63</string>
+				<string>5C138319-596F-4BFD-A5CB-1D2B076AAF36</string>
 				<key>WFControlFlowMode</key>
 				<integer>2</integer>
 			</dict>
@@ -193,7 +193,7 @@
 				<key>CustomOutputName</key>
 				<string>runPayload</string>
 				<key>UUID</key>
-				<string>D38F3495-41B3-43C5-9ED1-DD3F865BDA1C</string>
+				<string>0CB5815E-E068-4E4E-8047-A2932D2871D1</string>
 				<key>WFTextActionText</key>
 				<dict>
 					<key>Value</key>
@@ -228,7 +228,7 @@
 						<key>OutputName</key>
 						<string>runPayload</string>
 						<key>OutputUUID</key>
-						<string>D38F3495-41B3-43C5-9ED1-DD3F865BDA1C</string>
+						<string>0CB5815E-E068-4E4E-8047-A2932D2871D1</string>
 						<key>Type</key>
 						<string>ActionOutput</string>
 					</dict>
