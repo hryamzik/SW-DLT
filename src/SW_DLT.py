@@ -478,7 +478,8 @@ def main():
         file_id = "SW_DLT_DL_{}".format(hashlib.md5(
             str(sys.argv).encode("utf-8")).hexdigest()[0:20])
 
-        sw_dlt_inst = SW_DLT(file_id, *sys.argv[1:])
+        cli_args = unpack_run_payload(list(sys.argv[1:]))
+        sw_dlt_inst = SW_DLT(file_id, *cli_args)
         header = f'{Consts.SBOLD}SW-DLT{Consts.ENDL}'
 
         # Pre-download check and cleanup
@@ -507,8 +508,13 @@ def main():
             print(f"{Consts.CBLUE}SponsorBlock remove: {sb_label}{Consts.ENDL}")
         
         with open('SW_DLT_DL_metadata.json', 'w') as metadata:
-            args = ' '.join(map(str, sys.argv[2:]))
-            json.dump({f"{sys.argv[1]}": args}, metadata)
+            meta_key = sw_dlt_inst.media_url
+            meta_val = " ".join(
+                str(t)
+                for t in cli_args[1:]
+                if not (isinstance(t, str) and t.startswith("--sbjson="))
+            )
+            json.dump({meta_key: meta_val}, metadata)
         
         return sw_dlt_inst.run()
 

@@ -137,7 +137,7 @@ TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 \t\t\t\t\t<dict>
 \t\t\t\t\t\t<key>attachmentsByRange</key>
 \t\t\t\t\t\t<dict>
-\t\t\t\t\t\t\t<key>{{0, 1}}</key>
+\t\t\t\t\t\t\t<key>{{5, 1}}</key>
 \t\t\t\t\t\t\t<dict>
 \t\t\t\t\t\t\t\t<key>Type</key>
 \t\t\t\t\t\t\t\t<string>Variable</string>

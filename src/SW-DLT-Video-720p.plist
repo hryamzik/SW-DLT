@@ -21,7 +21,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>2851E51F-749A-403D-B5B8-FF1766DF0936</string>
+				<string>99C4FD61-F4A2-4E4C-B251-86D028D88A5C</string>
 				<key>WFCondition</key>
 				<integer>101</integer>
 				<key>WFControlFlowMode</key>
@@ -79,7 +79,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>2851E51F-749A-403D-B5B8-FF1766DF0936</string>
+				<string>99C4FD61-F4A2-4E4C-B251-86D028D88A5C</string>
 				<key>WFControlFlowMode</key>
 				<integer>1</integer>
 			</dict>
@@ -111,7 +111,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>2851E51F-749A-403D-B5B8-FF1766DF0936</string>
+				<string>99C4FD61-F4A2-4E4C-B251-86D028D88A5C</string>
 				<key>WFControlFlowMode</key>
 				<integer>2</integer>
 			</dict>
@@ -124,14 +124,14 @@
 				<key>CustomOutputName</key>
 				<string>runPayload</string>
 				<key>UUID</key>
-				<string>6B4FBEFB-C7BE-4C0F-8C52-C3BF35EBF5E2</string>
+				<string>EBB21E87-043F-444D-983D-392A0C3B63AF</string>
 				<key>WFTextActionText</key>
 				<dict>
 					<key>Value</key>
 					<dict>
 						<key>attachmentsByRange</key>
 						<dict>
-							<key>{0, 1}</key>
+							<key>{5, 1}</key>
 							<dict>
 								<key>Type</key>
 								<string>Variable</string>
@@ -155,7 +155,7 @@
 				<key>CustomOutputName</key>
 				<string>encodedPayload</string>
 				<key>UUID</key>
-				<string>F48C9E21-FCD5-4802-952A-7ED675A946D2</string>
+				<string>286AC510-A238-4275-9B52-26167E67BBD1</string>
 				<key>WFEncodeMode</key>
 				<string>Encode</string>
 				<key>WFInput</key>
@@ -165,7 +165,7 @@
 						<key>OutputName</key>
 						<string>runPayload</string>
 						<key>OutputUUID</key>
-						<string>6B4FBEFB-C7BE-4C0F-8C52-C3BF35EBF5E2</string>
+						<string>EBB21E87-043F-444D-983D-392A0C3B63AF</string>
 						<key>Type</key>
 						<string>ActionOutput</string>
 					</dict>
@@ -182,7 +182,7 @@
 				<key>CustomOutputName</key>
 				<string>launchURL</string>
 				<key>UUID</key>
-				<string>12A33487-8D4A-4882-BC83-DA6DDA24D4E8</string>
+				<string>BE1A9DB1-E296-4B79-93F2-127E650C64AD</string>
 				<key>WFTextActionText</key>
 				<dict>
 					<key>Value</key>
@@ -194,7 +194,7 @@
 								<key>OutputName</key>
 								<string>encodedPayload</string>
 								<key>OutputUUID</key>
-								<string>F48C9E21-FCD5-4802-952A-7ED675A946D2</string>
+								<string>286AC510-A238-4275-9B52-26167E67BBD1</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
@@ -219,7 +219,7 @@
 						<key>OutputName</key>
 						<string>launchURL</string>
 						<key>OutputUUID</key>
-						<string>12A33487-8D4A-4882-BC83-DA6DDA24D4E8</string>
+						<string>BE1A9DB1-E296-4B79-93F2-127E650C64AD</string>
 						<key>Type</key>
 						<string>ActionOutput</string>
 					</dict>
