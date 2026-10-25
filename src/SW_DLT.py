@@ -74,6 +74,8 @@ class SW_DLT:
         # args[3] (dependent): framerate for video
         # optional: --sponsorblock-remove=cat1,cat2 or --sbjson={...} (JSON map of {category: bool})
         arg_list = unpack_run_payload(list(args))
+        if len(arg_list) == 1 and isinstance(arg_list[0], str) and arg_list[0].startswith("RUN||"):
+            arg_list = unpack_run_payload(arg_list)
         if len(arg_list) < 2:
             raise ValueError("Missing required arguments from shortcut (media URL and mode)")
         self.media_url = arg_list[0]
