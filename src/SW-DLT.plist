@@ -2884,7 +2884,7 @@ $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install chardet requests cer
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade --force-reinstall
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -c "import yt_dlp"
 echo 0 &gt; $HOME/Documents/SW-DLT/shortcut_update_ts.txt
-curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/main/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
+curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/fix/ios-run-payload-shell-args/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
 open shortcuts://
 clear &amp;&amp; cd
 exit</string>
@@ -3789,6 +3789,252 @@ Changelog:
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFVariableName</key>
+				<string>runPayload</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.detect.text</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>extensionText</string>
+				<key>UUID</key>
+				<string>A9B8C7D6-E5F4-3210-ABCD-EF0123456789</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Aggrandizements</key>
+						<array>
+							<dict>
+								<key>CoercionItemClass</key>
+								<string>WFStringContentItem</string>
+								<key>Type</key>
+								<string>WFCoercionVariableAggrandizement</string>
+							</dict>
+						</array>
+						<key>Type</key>
+						<string>ExtensionInput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>F1E2D3C4-B5A6-9788-90AB-CDEF12345678</string>
+				<key>WFCondition</key>
+				<integer>99</integer>
+				<key>WFConditionalActionString</key>
+				<string>RUN||</string>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>WFInput</key>
+				<dict>
+					<key>Type</key>
+					<string>Variable</string>
+					<key>Variable</key>
+					<dict>
+						<key>Value</key>
+						<dict>
+							<key>OutputName</key>
+							<string>extensionText</string>
+							<key>OutputUUID</key>
+							<string>A9B8C7D6-E5F4-3210-ABCD-EF0123456789</string>
+							<key>Type</key>
+							<string>ActionOutput</string>
+						</dict>
+						<key>WFSerializationType</key>
+						<string>WFTextTokenAttachment</string>
+					</dict>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>extensionText</string>
+						<key>OutputUUID</key>
+						<string>A9B8C7D6-E5F4-3210-ABCD-EF0123456789</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+				<key>WFVariableName</key>
+				<string>runPayload</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.text.match</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>runPayloadParts</string>
+				<key>UUID</key>
+				<string>B8C9D0E1-F2A3-4567-89AB-CDEF01234567</string>
+				<key>WFMatchTextCaseSensitive</key>
+				<true/>
+				<key>WFMatchTextPattern</key>
+				<string>^RUN\|\|(.+)\|\|(.+)$</string>
+				<key>text</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>attachmentsByRange</key>
+						<dict>
+							<key>{0, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>runPayload</string>
+							</dict>
+						</dict>
+						<key>string</key>
+						<string>￼</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.getitemfromlist</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>payloadURL</string>
+				<key>UUID</key>
+				<string>C9D0E1F2-A3B4-5678-9ABC-DEF012345678</string>
+				<key>WFItemIndex</key>
+				<string>1</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>runPayloadParts</string>
+						<key>OutputUUID</key>
+						<string>B8C9D0E1-F2A3-4567-89AB-CDEF01234567</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>payloadURL</string>
+						<key>OutputUUID</key>
+						<string>C9D0E1F2-A3B4-5678-9ABC-DEF012345678</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+				<key>WFVariableName</key>
+				<string>mediaURL</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.getitemfromlist</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>payloadArgs</string>
+				<key>UUID</key>
+				<string>D0E1F2A3-B4C5-6789-ABCD-EF0123456789</string>
+				<key>WFItemIndex</key>
+				<string>2</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>runPayloadParts</string>
+						<key>OutputUUID</key>
+						<string>B8C9D0E1-F2A3-4567-89AB-CDEF01234567</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>payloadArgs</string>
+						<key>OutputUUID</key>
+						<string>D0E1F2A3-B4C5-6789-ABCD-EF0123456789</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+				<key>WFVariableName</key>
+				<string>args</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>F1E2D3C4-B5A6-9788-90AB-CDEF12345678</string>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
 			<string>is.workflow.actions.conditional</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
@@ -3818,7 +4064,7 @@ Changelog:
 							<key>Type</key>
 							<string>Variable</string>
 							<key>VariableName</key>
-							<string>mediaURL</string>
+							<string>runPayload</string>
 						</dict>
 						<key>WFSerializationType</key>
 						<string>WFTextTokenAttachment</string>
@@ -4991,7 +5237,7 @@ END:VCARD</string>
 					</dict>
 				</dict>
 				<key>WFNumberValue</key>
-				<string>30</string>
+				<string>55</string>
 			</dict>
 		</dict>
 		<dict>
@@ -5073,7 +5319,7 @@ END:VCARD</string>
 				<key>WFMatchTextCaseSensitive</key>
 				<false/>
 				<key>WFMatchTextPattern</key>
-				<string>^.{30}</string>
+				<string>.{50}$</string>
 				<key>text</key>
 				<dict>
 					<key>Value</key>
@@ -5124,7 +5370,7 @@ END:VCARD</string>
 							</dict>
 						</dict>
 						<key>string</key>
-						<string>￼...</string>
+						<string>...￼</string>
 					</dict>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenString</string>
@@ -7365,21 +7611,21 @@ URL: ￼</string>
 					<dict>
 						<key>attachmentsByRange</key>
 						<dict>
-							<key>{74, 1}</key>
+							<key>{64, 1}</key>
 							<dict>
 								<key>Type</key>
 								<string>Variable</string>
 								<key>VariableName</key>
 								<string>mediaURL</string>
 							</dict>
-							<key>{76, 1}</key>
+							<key>{67, 1}</key>
 							<dict>
 								<key>Type</key>
 								<string>Variable</string>
 								<key>VariableName</key>
 								<string>args</string>
 							</dict>
-							<key>{88, 1}</key>
+							<key>{80, 1}</key>
 							<dict>
 								<key>OutputName</key>
 								<string>sponsorBlockConfig</string>
@@ -7391,7 +7637,7 @@ URL: ￼</string>
 						</dict>
 						<key>string</key>
 						<string>cd $HOME/Documents/SW-DLT
-SW-DLT-ENV/bin/python SW_DLT.py ￼ ￼ --sbjson='￼'
+SW-DLT-ENV/bin/python SW_DLT.py 'RUN||￼||￼' --sbjson='￼'
 clear &amp;&amp; cd</string>
 					</dict>
 					<key>WFSerializationType</key>
