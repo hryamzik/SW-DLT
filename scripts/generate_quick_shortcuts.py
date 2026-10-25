@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""Generate SW-DLT quick wrapper shortcut plists (unsigned)."""
+
+import os
+import uuid
+
+TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+\t<key>WFQuickActionSurfaces</key>
+\t<array/>
+\t<key>WFWorkflowActions</key>
+\t<array>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.comment</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>WFCommentActionText</key>
+\t\t\t\t<string>{title}: thin wrapper for SW-DLT. Requires the main SW-DLT shortcut (SponsorBlock settings apply).</string>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.conditional</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>GroupingIdentifier</key>
+\t\t\t\t<string>{input_group}</string>
+\t\t\t\t<key>WFCondition</key>
+\t\t\t\t<integer>101</integer>
+\t\t\t\t<key>WFControlFlowMode</key>
+\t\t\t\t<integer>0</integer>
+\t\t\t\t<key>WFInput</key>
+\t\t\t\t<dict>
+\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t<string>Variable</string>
+\t\t\t\t\t<key>Variable</key>
+\t\t\t\t\t<dict>
+\t\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t<key>Aggrandizements</key>
+\t\t\t\t\t\t\t<array>
+\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t<key>CoercionItemClass</key>
+\t\t\t\t\t\t\t\t\t<string>WFStringContentItem</string>
+\t\t\t\t\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t\t\t\t\t<string>WFCoercionVariableAggrandizement</string>
+\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t</array>
+\t\t\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t\t\t<string>ExtensionInput</string>
+\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t\t<string>WFTextTokenAttachment</string>
+\t\t\t\t\t</dict>
+\t\t\t\t</dict>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.setvariable</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>WFInput</key>
+\t\t\t\t<dict>
+\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t<dict>
+\t\t\t\t\t\t<key>Aggrandizements</key>
+\t\t\t\t\t\t<array/>
+\t\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t\t<string>Clipboard</string>
+\t\t\t\t\t</dict>
+\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t<string>WFTextTokenAttachment</string>
+\t\t\t\t</dict>
+\t\t\t\t<key>WFVariableName</key>
+\t\t\t\t<string>mediaURL</string>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.conditional</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>GroupingIdentifier</key>
+\t\t\t\t<string>{input_group}</string>
+\t\t\t\t<key>WFControlFlowMode</key>
+\t\t\t\t<integer>1</integer>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.setvariable</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>WFInput</key>
+\t\t\t\t<dict>
+\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t<dict>
+\t\t\t\t\t\t<key>Aggrandizements</key>
+\t\t\t\t\t\t<array/>
+\t\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t\t<string>ExtensionInput</string>
+\t\t\t\t\t</dict>
+\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t<string>WFTextTokenAttachment</string>
+\t\t\t\t</dict>
+\t\t\t\t<key>WFVariableName</key>
+\t\t\t\t<string>mediaURL</string>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.conditional</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>GroupingIdentifier</key>
+\t\t\t\t<string>{input_group}</string>
+\t\t\t\t<key>WFControlFlowMode</key>
+\t\t\t\t<integer>2</integer>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.dictionary</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>CustomOutputName</key>
+\t\t\t\t<string>presetPayload</string>
+\t\t\t\t<key>UUID</key>
+\t\t\t\t<string>{dict_uuid}</string>
+\t\t\t\t<key>WFItems</key>
+\t\t\t\t<dict>
+\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t<dict>
+\t\t\t\t\t\t<key>WFDictionaryFieldValueItems</key>
+\t\t\t\t\t\t<array>
+\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t<key>WFItemType</key>
+\t\t\t\t\t\t\t\t<integer>0</integer>
+\t\t\t\t\t\t\t\t<key>WFKey</key>
+\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t\t<key>string</key>
+\t\t\t\t\t\t\t\t\t\t<string>url</string>
+\t\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t\t\t\t\t<string>WFTextTokenString</string>
+\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t<key>WFValue</key>
+\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t\t<key>attachmentsByRange</key>
+\t\t\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t\t\t<key>{{0, 1}}</key>
+\t\t\t\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t\t\t\t\t\t\t\t<string>Variable</string>
+\t\t\t\t\t\t\t\t\t\t\t\t<key>VariableName</key>
+\t\t\t\t\t\t\t\t\t\t\t\t<string>mediaURL</string>
+\t\t\t\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t\t\t<key>string</key>
+\t\t\t\t\t\t\t\t\t\t<string>￼</string>
+\t\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t\t\t\t\t<string>WFTextTokenString</string>
+\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t<key>WFItemType</key>
+\t\t\t\t\t\t\t\t<integer>0</integer>
+\t\t\t\t\t\t\t\t<key>WFKey</key>
+\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t\t<key>string</key>
+\t\t\t\t\t\t\t\t\t\t<string>args</string>
+\t\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t\t\t\t\t<string>WFTextTokenString</string>
+\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t<key>WFValue</key>
+\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t\t\t\t\t<dict>
+\t\t\t\t\t\t\t\t\t\t<key>string</key>
+\t\t\t\t\t\t\t\t\t\t<string>{args}</string>
+\t\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t\t\t\t\t<string>WFTextTokenString</string>
+\t\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t\t</dict>
+\t\t\t\t\t\t</array>
+\t\t\t\t\t</dict>
+\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t<string>WFDictionaryFieldValue</string>
+\t\t\t\t</dict>
+\t\t\t</dict>
+\t\t</dict>
+\t\t<dict>
+\t\t\t<key>WFWorkflowActionIdentifier</key>
+\t\t\t<string>is.workflow.actions.runworkflow</string>
+\t\t\t<key>WFWorkflowActionParameters</key>
+\t\t\t<dict>
+\t\t\t\t<key>UUID</key>
+\t\t\t\t<string>{run_uuid}</string>
+\t\t\t\t<key>WFInput</key>
+\t\t\t\t<dict>
+\t\t\t\t\t<key>Value</key>
+\t\t\t\t\t<dict>
+\t\t\t\t\t\t<key>OutputName</key>
+\t\t\t\t\t\t<string>presetPayload</string>
+\t\t\t\t\t\t<key>OutputUUID</key>
+\t\t\t\t\t\t<string>{dict_uuid}</string>
+\t\t\t\t\t\t<key>Type</key>
+\t\t\t\t\t\t<string>ActionOutput</string>
+\t\t\t\t\t</dict>
+\t\t\t\t\t<key>WFSerializationType</key>
+\t\t\t\t\t<string>WFTextTokenAttachment</string>
+\t\t\t\t</dict>
+\t\t\t\t<key>WFWorkflow</key>
+\t\t\t\t<dict>
+\t\t\t\t\t<key>WorkflowName</key>
+\t\t\t\t\t<string>SW-DLT</string>
+\t\t\t\t</dict>
+\t\t\t\t<key>WFWorkflowName</key>
+\t\t\t\t<string>SW-DLT</string>
+\t\t\t</dict>
+\t\t</dict>
+\t</array>
+\t<key>WFWorkflowClientVersion</key>
+\t<string>3612.0.1.2</string>
+\t<key>WFWorkflowHasOutputFallback</key>
+\t<false/>
+\t<key>WFWorkflowHasShortcutInputVariables</key>
+\t<true/>
+\t<key>WFWorkflowIcon</key>
+\t<dict>
+\t\t<key>WFWorkflowIconGlyphNumber</key>
+\t\t<integer>61458</integer>
+\t\t<key>WFWorkflowIconStartColor</key>
+\t\t<integer>4282601983</integer>
+\t</dict>
+\t<key>WFWorkflowImportQuestions</key>
+\t<array/>
+\t<key>WFWorkflowInputContentItemClasses</key>
+\t<array>
+\t\t<string>WFURLContentItem</string>
+\t</array>
+\t<key>WFWorkflowMinimumClientVersion</key>
+\t<integer>900</integer>
+\t<key>WFWorkflowMinimumClientVersionString</key>
+\t<string>900</string>
+\t<key>WFWorkflowOutputContentItemClasses</key>
+\t<array/>
+\t<key>WFWorkflowTypes</key>
+\t<array>
+\t\t<string>ActionExtension</string>
+\t\t<string>NCWidget</string>
+\t</array>
+</dict>
+</plist>
+"""
+
+
+def main():
+    root = os.path.join(os.path.dirname(__file__), "..", "src")
+    specs = [
+        ("SW-DLT-Audio.plist", "SW-DLT Audio", "-a"),
+        ("SW-DLT-Video-720p.plist", "SW-DLT Video 720p", "-v 720 30"),
+    ]
+    for filename, title, args in specs:
+        content = TEMPLATE.format(
+            title=title,
+            args=args,
+            input_group=str(uuid.uuid4()).upper(),
+            dict_uuid=str(uuid.uuid4()).upper(),
+            run_uuid=str(uuid.uuid4()).upper(),
+        )
+        path = os.path.join(root, filename)
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(content)
+        print("wrote", path)
+
+
+if __name__ == "__main__":
+    main()

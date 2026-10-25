@@ -16,7 +16,41 @@ import os
 class Consts:
     CYELLOW, CGREEN, CBLUE, SBOLD, ENDL = "\033[93m", "\033[92m", "\033[94m", "\033[1m", "\033[0m"
     DERROR_EXC = '{"output_code":"exception","exc_trace":"vars.downloadError"}'
-    
+    WORKSPACE = os.path.join(os.environ["HOME"], "Documents", "SW-DLT")
+    VENV_PYTHON = os.path.join(WORKSPACE, "SW-DLT-ENV", "bin", "python")
+    PIP_PACKAGES = (
+        "chardet", "requests", "certifi", "mutagen",
+        "yt-dlp", "yt-dlp-ejs", "yt-dlp-apple-webkit-jsi", "gallery-dl",
+    )
+
+
+def extend_ytdlp_sys_path():
+    """Match venv and a-Shell user site-packages (see net00-1/SW-DLT#141 / PR #145)."""
+    py_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    home = os.environ["HOME"]
+    for site_dir in (
+        os.path.join(home, "Documents", "SW-DLT", "SW-DLT-ENV", "lib", py_version, "site-packages"),
+        os.path.join(home, "Library", "lib", py_version, "site-packages"),
+    ):
+        if os.path.isdir(site_dir) and site_dir not in sys.path:
+            sys.path.append(site_dir)
+
+
+def load_yt_dlp():
+    """Import yt-dlp from the SW-DLT venv or a-Shell user site; pip into venv if needed."""
+    extend_ytdlp_sys_path()
+    try:
+        return __import__("yt_dlp")
+    except ImportError:
+        pass
+    pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
+    subprocess.run(
+        [pip, "-m", "pip", "install", *Consts.PIP_PACKAGES,
+         "-q", "--disable-pip-version-check", "--upgrade"],
+        check=False,
+    )
+    return __import__("yt_dlp")
+
 
 class SW_DLT:
 
@@ -105,10 +139,14 @@ class SW_DLT:
         self.playlist_type = ""
         self.gallery_range = ""
 
+        self.iphone_playback_optimize = False
         if self.primary_action == "-v" and remaining_args:
             self.video_res = remaining_args.pop(0)
             if self.video_res != "-d" and remaining_args:
                 self.video_fps = remaining_args.pop(0)
+            self.iphone_playback_optimize = (
+                self.video_res == "720" and self.video_fps == "30"
+            )
         elif self.primary_action == "-p" and remaining_args:
             self.playlist_type = remaining_args.pop(0)
         elif self.primary_action == "-g" and remaining_args:
@@ -194,13 +232,23 @@ class SW_DLT:
         
         show_progress("util", 1, 2)
 
-        with open(f"{os.environ['HOME']}/Documents/SW-DLT/shortcut_update_ts.txt", 'r') as ts_file:
-            last_check = int(ts_file.read())
-    
+        ts_path = os.path.join(Consts.WORKSPACE, "shortcut_update_ts.txt")
+        if not os.path.isfile(ts_path):
+            os.makedirs(Consts.WORKSPACE, exist_ok=True)
+            with open(ts_path, "w") as ts_file:
+                ts_file.write("0")
+
+        with open(ts_path, "r") as ts_file:
+            last_check = int(ts_file.read().strip() or "0")
+
+        pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
         if int(current_time.timestamp()) - last_check < 600:
-            subprocess.run("pip install chardet requests certifi mutagen -q --disable-pip-version-check --upgrade")
-            subprocess.run("pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade")
-            #yt-dlp is reloaded here to avoid issues after updates
+            subprocess.run(
+                [pip, "-m", "pip", "install", *Consts.PIP_PACKAGES,
+                 "-q", "--disable-pip-version-check", "--upgrade"],
+                check=False,
+            )
+            # yt-dlp is reloaded here to avoid issues after updates
             importlib.reload(yt_dlp)
         
         show_progress("util", 2, 2)
@@ -216,6 +264,7 @@ class SW_DLT:
 
         dl_options = {
             "format": default_format if self.video_res == "-d" else custom_format,
+            "noplaylist": True,
             "playlist_items": "1-1",
             "outtmpl": f'{self.file_id}.%(ext)s',
             "format_sort": ["res", "ext:mp4:m4a", "codec:avc:m4a"],
@@ -223,6 +272,8 @@ class SW_DLT:
         }
 
         dl_options = self._apply_sponsorblock(dl_options)
+        if self.iphone_playback_optimize:
+            dl_options = self._apply_iphone_video_options(dl_options)
 
         try:
             # Returns shortcuts redirect URL with downloaded file data, any exception is re-thrown
@@ -231,11 +282,40 @@ class SW_DLT:
         except (yt_dlp.utils.DownloadError, OSError) as ex:
             raise Exception(ex.args[0])
 
+    @staticmethod
+    def _apply_iphone_video_options(dl_options):
+        dl_options["merge_output_format"] = "mp4"
+        dl_options["format_sort"] = [
+            "res:720", "fps:30", "ext:mp4:m4a", "codec:avc:h264", "codec:m4a",
+        ]
+        postprocessors = list(dl_options.get("postprocessors", []))
+        postprocessors.append({
+            "key": "FFmpegVideoConvertor",
+            "preferedformat": "mp4",
+        })
+        dl_options["postprocessors"] = postprocessors
+        dl_options.setdefault("postprocessor_args", {})["FFmpegVideoConvertor"] = [
+            "-c:v", "libx264", "-crf", "23", "-preset", "fast",
+            "-vf", (
+                "scale='min(1280,iw)':min(720\\,ih):"
+                "force_original_aspect_ratio=decrease,fps=min(30\\,source_fps)"
+            ),
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "160k",
+            "-movflags", "+faststart",
+        ]
+        return dl_options
+
     def single_audio(self):
         dl_options = {
             "format": "bestaudio[ext*=4]/bestaudio[ext=mp3]/best[ext=mp4]/best",
+            "noplaylist": True,
             "playlist_items": "1-1",
-            "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "m4a"}],
+            "postprocessors": [{
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "m4a",
+                "preferredquality": "192",
+            }],
             "outtmpl": f'{self.file_id}.%(ext)s',
             **self.ytdlp_globals
         }
@@ -380,7 +460,7 @@ def main():
         "update_check": f'{Consts.CBLUE}Preparing{Consts.ENDL}\n{Consts.CYELLOW}Checking for Updates{Consts.ENDL}'
     }
     try:
-        globals()["yt_dlp"] = __import__("yt_dlp")
+        globals()["yt_dlp"] = load_yt_dlp()
         # Hashes all arguments to generate unique ID
         file_id = "SW_DLT_DL_{}".format(hashlib.md5(
             str(sys.argv).encode("utf-8")).hexdigest()[0:20])
