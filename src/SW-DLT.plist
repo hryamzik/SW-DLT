@@ -885,30 +885,6 @@ GLOBAL SETTINGS INITIALIZATION</string>
 														<key>Value</key>
 														<dict>
 															<key>string</key>
-															<string>bitcoincash</string>
-														</dict>
-														<key>WFSerializationType</key>
-														<string>WFTextTokenString</string>
-													</dict>
-													<key>WFValue</key>
-													<dict>
-														<key>Value</key>
-														<dict>
-															<key>string</key>
-															<string>bitcoincash:qq5l9j3cgah8s6rz3xd5aet0u8wml2ezsgst9fedzz?amount=0.0086369</string>
-														</dict>
-														<key>WFSerializationType</key>
-														<string>WFTextTokenString</string>
-													</dict>
-												</dict>
-												<dict>
-													<key>WFItemType</key>
-													<integer>0</integer>
-													<key>WFKey</key>
-													<dict>
-														<key>Value</key>
-														<dict>
-															<key>string</key>
 															<string>docsURL</string>
 														</dict>
 														<key>WFSerializationType</key>
@@ -919,7 +895,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 														<key>Value</key>
 														<dict>
 															<key>string</key>
-															<string>https://github.com/net00-1/SW-DLT/blob/master/Docs.md</string>
+															<string>https://github.com/hryamzik/SW-DLT/blob/main/Docs.md</string>
 														</dict>
 														<key>WFSerializationType</key>
 														<string>WFTextTokenString</string>
@@ -943,7 +919,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 														<key>Value</key>
 														<dict>
 															<key>string</key>
-															<string>https://github.com/net00-1/SW-DLT/issues</string>
+															<string>https://github.com/hryamzik/SW-DLT/issues</string>
 														</dict>
 														<key>WFSerializationType</key>
 														<string>WFTextTokenString</string>
@@ -992,30 +968,6 @@ GLOBAL SETTINGS INITIALIZATION</string>
 														<dict>
 															<key>string</key>
 															<string>https://github.com/mikf/gallery-dl</string>
-														</dict>
-														<key>WFSerializationType</key>
-														<string>WFTextTokenString</string>
-													</dict>
-												</dict>
-												<dict>
-													<key>WFItemType</key>
-													<integer>0</integer>
-													<key>WFKey</key>
-													<dict>
-														<key>Value</key>
-														<dict>
-															<key>string</key>
-															<string>qrLink</string>
-														</dict>
-														<key>WFSerializationType</key>
-														<string>WFTextTokenString</string>
-													</dict>
-													<key>WFValue</key>
-													<dict>
-														<key>Value</key>
-														<dict>
-															<key>string</key>
-															<string>https://raw.githubusercontent.com/net00-1/SW-DLT/refs/heads/master/images/donation_qr.png</string>
 														</dict>
 														<key>WFSerializationType</key>
 														<string>WFTextTokenString</string>
@@ -1167,6 +1119,8 @@ GLOBAL SETTINGS INITIALIZATION</string>
 												</dict>
 											</array>
 										</dict>
+										<key>WFDictionaryFieldValueItems</key>
+										<array/>
 										<key>WFSerializationType</key>
 										<string>WFDictionaryFieldValue</string>
 									</dict>
@@ -2926,11 +2880,11 @@ fi</string>
 hideKeyboard
 echo "Please wait..."
 python -m venv $HOME/Documents/SW-DLT/SW-DLT-ENV/
-source $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/activate
-pip install chardet requests certifi mutagen -q --disable-pip-version-check --upgrade --force-reinstall
-pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade --force-reinstall
+$HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install chardet requests certifi mutagen -q --disable-pip-version-check --upgrade --force-reinstall
+$HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade --force-reinstall
+$HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -c "import yt_dlp"
+echo 0 &gt; $HOME/Documents/SW-DLT/shortcut_update_ts.txt
 curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/main/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
-deactivate
 open shortcuts://
 clear &amp;&amp; cd
 exit</string>
@@ -3658,6 +3612,222 @@ Changelog:
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.comment</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFCommentActionText</key>
+				<string>PRESET INPUT (quick shortcuts pass a dictionary with url and args)</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.detect.dictionary</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>presetDict</string>
+				<key>UUID</key>
+				<string>F8A2C4E1-9B3D-4F5A-8C7E-1D2E3F4A5B6C</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ExtensionInput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>C3D4E5F6-A7B8-9012-CDEF-345678901234</string>
+				<key>WFCondition</key>
+				<integer>100</integer>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>WFInput</key>
+				<dict>
+					<key>Type</key>
+					<string>Variable</string>
+					<key>Variable</key>
+					<dict>
+						<key>Value</key>
+						<dict>
+							<key>OutputName</key>
+							<string>presetDict</string>
+							<key>OutputUUID</key>
+							<string>F8A2C4E1-9B3D-4F5A-8C7E-1D2E3F4A5B6C</string>
+							<key>Type</key>
+							<string>ActionOutput</string>
+						</dict>
+						<key>WFSerializationType</key>
+						<string>WFTextTokenAttachment</string>
+					</dict>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.getvalueforkey</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>presetURL</string>
+				<key>UUID</key>
+				<string>A1B2C3D4-E5F6-7890-ABCD-EF1234567890</string>
+				<key>WFDictionaryKey</key>
+				<string>url</string>
+				<key>WFGetDictionaryValueType</key>
+				<string>Value</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>presetDict</string>
+						<key>OutputUUID</key>
+						<string>F8A2C4E1-9B3D-4F5A-8C7E-1D2E3F4A5B6C</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>presetURL</string>
+						<key>OutputUUID</key>
+						<string>A1B2C3D4-E5F6-7890-ABCD-EF1234567890</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+				<key>WFVariableName</key>
+				<string>mediaURL</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.getvalueforkey</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>presetArgs</string>
+				<key>UUID</key>
+				<string>B2C3D4E5-F6A7-8901-BCDE-F23456789012</string>
+				<key>WFDictionaryKey</key>
+				<string>args</string>
+				<key>WFGetDictionaryValueType</key>
+				<string>Value</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>presetDict</string>
+						<key>OutputUUID</key>
+						<string>F8A2C4E1-9B3D-4F5A-8C7E-1D2E3F4A5B6C</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>OutputName</key>
+						<string>presetArgs</string>
+						<key>OutputUUID</key>
+						<string>B2C3D4E5-F6A7-8901-BCDE-F23456789012</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+				<key>WFVariableName</key>
+				<string>args</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>C3D4E5F6-A7B8-9012-CDEF-345678901234</string>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>D4E5F6A7-B8C9-0123-DEF0-456789012345</string>
+				<key>WFCondition</key>
+				<integer>101</integer>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>WFInput</key>
+				<dict>
+					<key>Type</key>
+					<string>Variable</string>
+					<key>Variable</key>
+					<dict>
+						<key>Value</key>
+						<dict>
+							<key>Aggrandizements</key>
+							<array>
+								<dict>
+									<key>CoercionItemClass</key>
+									<string>WFStringContentItem</string>
+									<key>Type</key>
+									<string>WFCoercionVariableAggrandizement</string>
+								</dict>
+							</array>
+							<key>Type</key>
+							<string>Variable</string>
+							<key>VariableName</key>
+							<string>mediaURL</string>
+						</dict>
+						<key>WFSerializationType</key>
+						<string>WFTextTokenAttachment</string>
+					</dict>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
 			<string>is.workflow.actions.conditional</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
@@ -3761,11 +3931,72 @@ Changelog:
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>D4E5F6A7-B8C9-0123-DEF0-456789012345</string>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>E5F6A7B8-C9D0-1234-EF01-567890123456</string>
+				<key>WFCondition</key>
+				<integer>101</integer>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>WFInput</key>
+				<dict>
+					<key>Type</key>
+					<string>Variable</string>
+					<key>Variable</key>
+					<dict>
+						<key>Value</key>
+						<dict>
+							<key>Aggrandizements</key>
+							<array>
+								<dict>
+									<key>CoercionItemClass</key>
+									<string>WFStringContentItem</string>
+									<key>Type</key>
+									<string>WFCoercionVariableAggrandizement</string>
+								</dict>
+							</array>
+							<key>Type</key>
+							<string>Variable</string>
+							<key>VariableName</key>
+							<string>args</string>
+						</dict>
+						<key>WFSerializationType</key>
+						<string>WFTextTokenAttachment</string>
+					</dict>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
 			<string>is.workflow.actions.setvariable</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>WFVariableName</key>
 				<string>args</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>E5F6A7B8-C9D0-1234-EF01-567890123456</string>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -4982,7 +5213,7 @@ END:VCARD</string>
 BEGIN:VCARD
 N:About;;;;
 PHOTO;ENCODING=b:￼
-ORG:Donate, helpful links, report issues;
+ORG:Helpful links, report issues;
 END:VCARD</string>
 					</dict>
 					<key>WFSerializationType</key>
@@ -6549,43 +6780,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2280, 1}</key>
-							<dict>
-								<key>Aggrandizements</key>
-								<array>
-									<dict>
-										<key>DictionaryKey</key>
-										<string>vars.bitcoincash</string>
-										<key>Type</key>
-										<string>WFDictionaryValueVariableAggrandizement</string>
-									</dict>
-								</array>
-								<key>OutputName</key>
-								<string>properties</string>
-								<key>OutputUUID</key>
-								<string>C1532E11-A796-4092-8EBD-3571D584EBFF</string>
-								<key>Type</key>
-								<string>ActionOutput</string>
-							</dict>
-							<key>{2293, 1}</key>
-							<dict>
-								<key>Aggrandizements</key>
-								<array>
-									<dict>
-										<key>DictionaryKey</key>
-										<string>vars.qrLink</string>
-										<key>Type</key>
-										<string>WFDictionaryValueVariableAggrandizement</string>
-									</dict>
-								</array>
-								<key>OutputName</key>
-								<string>properties</string>
-								<key>OutputUUID</key>
-								<string>C1532E11-A796-4092-8EBD-3571D584EBFF</string>
-								<key>Type</key>
-								<string>ActionOutput</string>
-							</dict>
-							<key>{2392, 1}</key>
+							<key>{2145, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6603,7 +6798,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2448, 1}</key>
+							<key>{2201, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6621,7 +6816,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2504, 1}</key>
+							<key>{2257, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6639,7 +6834,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2549, 1}</key>
+							<key>{2302, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6657,7 +6852,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2713, 1}</key>
+							<key>{2466, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6675,7 +6870,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2749, 1}</key>
+							<key>{2502, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6693,7 +6888,7 @@ URL: ￼</string>
 								<key>Type</key>
 								<string>ActionOutput</string>
 							</dict>
-							<key>{2786, 1}</key>
+							<key>{2539, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -6793,10 +6988,6 @@ URL: ￼</string>
             &lt;h2&gt;SW-DLT&lt;/h2&gt;
         &lt;/div&gt;
         &lt;div class='links'&gt;
-            &lt;hr /&gt;
-            &lt;h3&gt;Donations ❤️&lt;/h3&gt;
-            &lt;p&gt;If this shortcut has helped you, please consider leaving a small tip by scanning or holding on the QR code. Thank you!&lt;/p&gt;
-            &lt;a href='￼'&gt;&lt;img src='￼' width="40%" /&gt;&lt;/a&gt;
             &lt;hr /&gt;
             &lt;h3&gt;Useful Links&lt;/h3&gt;
             &lt;p&gt;&lt;a href='￼'&gt;SW-DLT Documentation&lt;/a&gt;&lt;/p&gt;
@@ -7200,9 +7391,7 @@ URL: ￼</string>
 						</dict>
 						<key>string</key>
 						<string>cd $HOME/Documents/SW-DLT
-source SW-DLT-ENV/bin/activate
-python SW_DLT.py ￼ ￼ --sbjson='￼'
-deactivate
+SW-DLT-ENV/bin/python SW_DLT.py ￼ ￼ --sbjson='￼'
 clear &amp;&amp; cd</string>
 					</dict>
 					<key>WFSerializationType</key>
@@ -7258,6 +7447,8 @@ clear &amp;&amp; cd</string>
 	<key>WFWorkflowInputContentItemClasses</key>
 	<array>
 		<string>WFURLContentItem</string>
+		<string>WFDictionaryContentItem</string>
+		<string>WFStringContentItem</string>
 	</array>
 	<key>WFWorkflowMinimumClientVersion</key>
 	<integer>900</integer>
