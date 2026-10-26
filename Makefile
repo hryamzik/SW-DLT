@@ -1,4 +1,7 @@
-build:
+verify:
+	@python3 scripts/verify_shortcut_shell.py
+
+build: verify
 	@python3 scripts/generate_quick_shortcuts.py
 	@cp -v src/SW-DLT.plist SW-DLT-unsigned.shortcut
 	@shortcuts sign --mode people-who-know-me --input "SW-DLT-unsigned.shortcut" --output "SW-DLT.shortcut"

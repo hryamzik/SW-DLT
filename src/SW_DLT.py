@@ -52,6 +52,19 @@ def load_yt_dlp():
     return __import__("yt_dlp")
 
 
+def unpack_run_payload(arg_list):
+    """Accept RUN||<url>||<mode and options> from a single shell argument (safe for & in URLs)."""
+    if not arg_list:
+        return arg_list
+    head = arg_list[0]
+    if isinstance(head, str) and head.startswith("RUN||"):
+        payload = head[5:]
+        if "||" in payload:
+            media_url, mode = payload.rsplit("||", 1)
+            return [media_url, mode] + list(arg_list[1:])
+    return list(arg_list)
+
+
 class SW_DLT:
 
     def __init__(self, file_id, *args):
@@ -60,9 +73,11 @@ class SW_DLT:
         # args[2] (dependent): resolution for video, type for playlist, or range for gallery
         # args[3] (dependent): framerate for video
         # optional: --sponsorblock-remove=cat1,cat2 or --sbjson={...} (JSON map of {category: bool})
-        if len(args) < 2:
+        arg_list = unpack_run_payload(list(args))
+        if len(arg_list) == 1 and isinstance(arg_list[0], str) and arg_list[0].startswith("RUN||"):
+            arg_list = unpack_run_payload(arg_list)
+        if len(arg_list) < 2:
             raise ValueError("Missing required arguments from shortcut (media URL and mode)")
-        arg_list = list(args)
         self.media_url = arg_list[0]
         self.file_id = file_id
         self.primary_action = arg_list[1]
@@ -465,7 +480,8 @@ def main():
         file_id = "SW_DLT_DL_{}".format(hashlib.md5(
             str(sys.argv).encode("utf-8")).hexdigest()[0:20])
 
-        sw_dlt_inst = SW_DLT(file_id, *sys.argv[1:])
+        cli_args = unpack_run_payload(list(sys.argv[1:]))
+        sw_dlt_inst = SW_DLT(file_id, *cli_args)
         header = f'{Consts.SBOLD}SW-DLT{Consts.ENDL}'
 
         # Pre-download check and cleanup
@@ -494,8 +510,13 @@ def main():
             print(f"{Consts.CBLUE}SponsorBlock remove: {sb_label}{Consts.ENDL}")
         
         with open('SW_DLT_DL_metadata.json', 'w') as metadata:
-            args = ' '.join(map(str, sys.argv[2:]))
-            json.dump({f"{sys.argv[1]}": args}, metadata)
+            meta_key = sw_dlt_inst.media_url
+            meta_val = " ".join(
+                str(t)
+                for t in cli_args[1:]
+                if not (isinstance(t, str) and t.startswith("--sbjson="))
+            )
+            json.dump({meta_key: meta_val}, metadata)
         
         return sw_dlt_inst.run()
 

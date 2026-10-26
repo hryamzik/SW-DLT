@@ -21,7 +21,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>197C71B1-E3B4-4948-8AD2-2053981FC8A9</string>
+				<string>B08EAD9F-CFE4-47A4-8203-A1467F1CBF6A</string>
 				<key>WFCondition</key>
 				<integer>101</integer>
 				<key>WFControlFlowMode</key>
@@ -79,7 +79,7 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>197C71B1-E3B4-4948-8AD2-2053981FC8A9</string>
+				<string>B08EAD9F-CFE4-47A4-8203-A1467F1CBF6A</string>
 				<key>WFControlFlowMode</key>
 				<integer>1</integer>
 			</dict>
@@ -111,119 +111,139 @@
 			<key>WFWorkflowActionParameters</key>
 			<dict>
 				<key>GroupingIdentifier</key>
-				<string>197C71B1-E3B4-4948-8AD2-2053981FC8A9</string>
+				<string>B08EAD9F-CFE4-47A4-8203-A1467F1CBF6A</string>
 				<key>WFControlFlowMode</key>
 				<integer>2</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
-			<string>is.workflow.actions.dictionary</string>
+			<string>is.workflow.actions.conditional</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
-				<key>CustomOutputName</key>
-				<string>presetPayload</string>
-				<key>UUID</key>
-				<string>81787732-F448-4241-95F7-89699222021E</string>
-				<key>WFItems</key>
+				<key>GroupingIdentifier</key>
+				<string>931746EF-4C07-428E-B8A0-9B53A7F5B218</string>
+				<key>WFCondition</key>
+				<integer>101</integer>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>WFInput</key>
 				<dict>
-					<key>Value</key>
+					<key>Type</key>
+					<string>Variable</string>
+					<key>Variable</key>
 					<dict>
-						<key>WFDictionaryFieldValueItems</key>
-						<array>
-							<dict>
-								<key>WFItemType</key>
-								<integer>0</integer>
-								<key>WFKey</key>
+						<key>Value</key>
+						<dict>
+							<key>Aggrandizements</key>
+							<array>
 								<dict>
-									<key>Value</key>
-									<dict>
-										<key>string</key>
-										<string>url</string>
-									</dict>
-									<key>WFSerializationType</key>
-									<string>WFTextTokenString</string>
+									<key>CoercionItemClass</key>
+									<string>WFStringContentItem</string>
+									<key>Type</key>
+									<string>WFCoercionVariableAggrandizement</string>
 								</dict>
-								<key>WFValue</key>
-								<dict>
-									<key>Value</key>
-									<dict>
-										<key>attachmentsByRange</key>
-										<dict>
-											<key>{0, 1}</key>
-											<dict>
-												<key>Type</key>
-												<string>Variable</string>
-												<key>VariableName</key>
-												<string>mediaURL</string>
-											</dict>
-										</dict>
-										<key>string</key>
-										<string>￼</string>
-									</dict>
-									<key>WFSerializationType</key>
-									<string>WFTextTokenString</string>
-								</dict>
-							</dict>
-							<dict>
-								<key>WFItemType</key>
-								<integer>0</integer>
-								<key>WFKey</key>
-								<dict>
-									<key>Value</key>
-									<dict>
-										<key>string</key>
-										<string>args</string>
-									</dict>
-									<key>WFSerializationType</key>
-									<string>WFTextTokenString</string>
-								</dict>
-								<key>WFValue</key>
-								<dict>
-									<key>Value</key>
-									<dict>
-										<key>string</key>
-										<string>-v 720 30</string>
-									</dict>
-									<key>WFSerializationType</key>
-									<string>WFTextTokenString</string>
-								</dict>
-							</dict>
-						</array>
+							</array>
+							<key>Type</key>
+							<string>Variable</string>
+							<key>VariableName</key>
+							<string>mediaURL</string>
+						</dict>
+						<key>WFSerializationType</key>
+						<string>WFTextTokenAttachment</string>
 					</dict>
-					<key>WFSerializationType</key>
-					<string>WFDictionaryFieldValue</string>
 				</dict>
 			</dict>
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
-			<string>is.workflow.actions.runworkflow</string>
+			<string>is.workflow.actions.alert</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
+				<key>WFAlertActionCancelButtonShown</key>
+				<false/>
+				<key>WFAlertActionMessage</key>
+				<string>Copy a media URL to the clipboard first, then run this shortcut again.</string>
+				<key>WFAlertActionTitle</key>
+				<string>SW-DLT</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.exit</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict/>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>931746EF-4C07-428E-B8A0-9B53A7F5B218</string>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.gettext</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>runPayload</string>
 				<key>UUID</key>
-				<string>03F5825A-C7C6-4A42-B3DB-93383F7883DF</string>
+				<string>EF5EB5C8-60D3-4869-B28C-732FC56B20ED</string>
+				<key>WFTextActionText</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>attachmentsByRange</key>
+						<dict>
+							<key>{5, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>mediaURL</string>
+							</dict>
+						</dict>
+						<key>string</key>
+						<string>RUN||￼||-v 720 30</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setclipboard</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
 					<dict>
 						<key>OutputName</key>
-						<string>presetPayload</string>
+						<string>runPayload</string>
 						<key>OutputUUID</key>
-						<string>81787732-F448-4241-95F7-89699222021E</string>
+						<string>EF5EB5C8-60D3-4869-B28C-732FC56B20ED</string>
 						<key>Type</key>
 						<string>ActionOutput</string>
 					</dict>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
-				<key>WFWorkflow</key>
-				<dict>
-					<key>WorkflowName</key>
-					<string>SW-DLT</string>
-				</dict>
-				<key>WFWorkflowName</key>
-				<string>SW-DLT</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.openurl</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFInput</key>
+				<string>shortcuts://run-shortcut?name=SW-DLT&amp;input=clipboard</string>
 			</dict>
 		</dict>
 	</array>
