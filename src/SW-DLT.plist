@@ -2884,7 +2884,7 @@ $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install chardet requests cer
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade --force-reinstall
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -c "import yt_dlp"
 echo 0 &gt; $HOME/Documents/SW-DLT/shortcut_update_ts.txt
-curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/main/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
+curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/fix/ios27-output-and-bugs/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
 open shortcuts://
 clear &amp;&amp; cd
 exit</string>

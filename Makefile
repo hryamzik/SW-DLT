@@ -1,6 +1,9 @@
 verify:
 	@python3 scripts/verify_shortcut_shell.py
 
+check-urls:
+	@python3 scripts/check_branch_urls.py --branch main
+
 build: verify
 	@python3 scripts/generate_quick_shortcuts.py
 	@cp -v src/SW-DLT.plist SW-DLT-unsigned.shortcut
