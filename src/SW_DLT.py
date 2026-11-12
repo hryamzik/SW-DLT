@@ -6,9 +6,11 @@ import subprocess
 import importlib
 import datetime
 import hashlib
+import glob
 import shutil
 import base64
 import json
+import time
 import sys
 import os
 
@@ -18,38 +20,84 @@ class Consts:
     DERROR_EXC = '{"output_code":"exception","exc_trace":"vars.downloadError"}'
     WORKSPACE = os.path.join(os.environ["HOME"], "Documents", "SW-DLT")
     VENV_PYTHON = os.path.join(WORKSPACE, "SW-DLT-ENV", "bin", "python")
+    COOKIE_FILE = os.path.join(os.environ["HOME"], "Library", "Cookies", "Cookies.binarycookies")
+    # WebKit may not flush the cookie jar until a-Shell is backgrounded (net00-1/SW-DLT#153)
+    COOKIE_WAIT_SECS = 10
     PIP_PACKAGES = (
         "chardet", "requests", "certifi", "mutagen",
         "yt-dlp", "yt-dlp-ejs", "yt-dlp-apple-webkit-jsi", "gallery-dl",
     )
 
 
-def extend_ytdlp_sys_path():
-    """Match venv and a-Shell user site-packages (see net00-1/SW-DLT#141 / PR #145)."""
-    py_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+def candidate_site_dirs():
+    """Venv and a-Shell user site-packages (see net00-1/SW-DLT#141 / PR #145).
+
+    The running interpreter's version comes first, but any other pythonX.Y
+    found is also tried: a-Shell updates (and the macOS build) can ship a
+    different Python than the one the venv was created with.
+    """
     home = os.environ["HOME"]
-    for site_dir in (
-        os.path.join(home, "Documents", "SW-DLT", "SW-DLT-ENV", "lib", py_version, "site-packages"),
-        os.path.join(home, "Library", "lib", py_version, "site-packages"),
-    ):
+    py_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    roots = (
+        os.path.join(Consts.WORKSPACE, "SW-DLT-ENV", "lib"),
+        os.path.join(home, "Library", "lib"),
+    )
+    dirs = [os.path.join(root, py_version, "site-packages") for root in roots]
+    for root in roots:
+        dirs.extend(sorted(glob.glob(os.path.join(root, "python3*", "site-packages")), reverse=True))
+    seen = []
+    for site_dir in dirs:
+        if site_dir not in seen:
+            seen.append(site_dir)
+    return seen
+
+
+def remove_pip_leftovers():
+    """Delete "~name" dirs pip leaves behind when an upgrade is interrupted.
+
+    pip renames a package to ~xxx while replacing it; if a-Shell is closed
+    mid-upgrade the dir stays and every later pip run prints
+    "WARNING: Ignoring invalid distribution ~t-dlp".
+    """
+    for site_dir in candidate_site_dirs():
+        for leftover in glob.glob(os.path.join(site_dir, "~*")):
+            shutil.rmtree(leftover, ignore_errors=True)
+
+
+def extend_ytdlp_sys_path():
+    for site_dir in candidate_site_dirs():
         if os.path.isdir(site_dir) and site_dir not in sys.path:
             sys.path.append(site_dir)
+    # Directories that appeared after start-up (e.g. right after pip) are
+    # otherwise ignored by the cached path finders.
+    importlib.invalidate_caches()
 
 
 def load_yt_dlp():
     """Import yt-dlp from the SW-DLT venv or a-Shell user site; pip into venv if needed."""
     extend_ytdlp_sys_path()
     try:
-        return __import__("yt_dlp")
+        return importlib.import_module("yt_dlp")
     except ImportError:
         pass
     pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
+    remove_pip_leftovers()
     subprocess.run(
         [pip, "-m", "pip", "install", *Consts.PIP_PACKAGES,
          "-q", "--disable-pip-version-check", "--upgrade"],
         check=False,
     )
-    return __import__("yt_dlp")
+    # Re-scan: the site-packages dir may only exist now that pip has run.
+    extend_ytdlp_sys_path()
+    try:
+        return importlib.import_module("yt_dlp")
+    except ImportError as ex:
+        found = [d for d in candidate_site_dirs() if os.path.isdir(d)]
+        raise Exception(
+            f"{ex}\npython: {sys.executable} ({sys.version.split()[0]})\n"
+            f"HOME: {os.environ.get('HOME')}\n"
+            f"site dirs found: {found or 'none'}"
+        ) from ex
 
 
 def unpack_run_payload(arg_list):
@@ -106,6 +154,7 @@ class SW_DLT:
         if self.primary_action not in processes:
             raise ValueError("Missing required arguments from shortcut (media URL and mode)")
         self.run = processes[self.primary_action]
+        self.use_cookies = True
         # SponsorBlock categories
         valid_sb_categories = {
             "sponsor",
@@ -232,19 +281,25 @@ class SW_DLT:
                 parsed.append(cat)
         return parsed
 
-    @staticmethod
-    def update_check():
+    def update_check(self):
         current_time = datetime.datetime.today()
         show_progress("util", 0, 2)
-        if not os.path.exists(f"{os.environ['HOME']}/Library/Cookies/Cookies.binarycookies"):
+        if not os.path.exists(Consts.COOKIE_FILE):
             cookie_expiration = current_time.replace(year=current_time.year + 1).strftime('%a, %-d %b %Y %H:%M:%S UTC')
             set_cookie = f"echo 'document.cookie = \"installed=1; expires={cookie_expiration}; sameSite=Lax\";' | jsi"
             subprocess.run(set_cookie)
 
-        #We need to wait for delay in jsi command
-        while not os.path.exists(f"{os.environ['HOME']}/Library/Cookies/Cookies.binarycookies"):
-            subprocess.run("sleep 1")
-        
+            # Wait for the jsi command to create the cookie jar, but not forever:
+            # an unbounded wait hangs the download at "Loading: 0.0%".
+            deadline = time.monotonic() + Consts.COOKIE_WAIT_SECS
+            while not os.path.exists(Consts.COOKIE_FILE) and time.monotonic() < deadline:
+                time.sleep(1)
+
+        if not os.path.exists(Consts.COOKIE_FILE):
+            # yt-dlp and gallery-dl fail outright on a missing Safari cookie jar
+            self.use_cookies = False
+            self.ytdlp_globals.pop("cookiesfrombrowser", None)
+
         show_progress("util", 1, 2)
 
         ts_path = os.path.join(Consts.WORKSPACE, "shortcut_update_ts.txt")
@@ -258,6 +313,7 @@ class SW_DLT:
 
         pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
         if int(current_time.timestamp()) - last_check < 600:
+            remove_pip_leftovers()
             subprocess.run(
                 [pip, "-m", "pip", "install", *Consts.PIP_PACKAGES,
                  "-q", "--disable-pip-version-check", "--upgrade"],
@@ -274,7 +330,7 @@ class SW_DLT:
             "bestvideo[height={0}][fps<={1}]+bestaudio/"\
             "best[height={0}][fps<={1}]/"\
             "bestvideo[height<={0}][fps<={1}]+bestaudio/"\
-            "best[height<={0}][fps<={1}]"\
+            "best[height<={0}][fps<={1}]/"\
             "best[height={0}]".format(self.video_res, self.video_fps)
 
         dl_options = {
@@ -355,19 +411,22 @@ class SW_DLT:
             if file.startswith(self.file_id):
                 output = {
                     "output_code": "success",
+                    "app_name": os.environ.get("APPNAME", ""),
                     "file_name": os.path.abspath(file),
                     "file_title": vid_title
                 }
                 return f'shortcuts://run-shortcut?name=SW-DLT&input=text&text={urllib.parse.quote(json.dumps(output))}'
         # If for some reason the above doesn't find the downloaded file, we raise generic Exception
-        raise Exception(Consts.DERROR)
+        raise Exception(Consts.DERROR_EXC)
 
     def gallery_download(self):
         try:
             # Creating temp folder to store media
             os.makedirs(self.file_id, exist_ok=True)
-            dl_cmd = "gallery-dl {0} --range \"{1}\" --directory {2} --cookies-from-browser safari".format(
+            dl_cmd = "gallery-dl {0} --range \"{1}\" --directory {2}".format(
                 self.media_url, self.gallery_range, self.file_id)
+            if self.use_cookies:
+                dl_cmd += " --cookies-from-browser safari"
                 
             with subprocess.Popen(dl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True) as gdl:
                 for entry in gdl.stdout:
@@ -383,6 +442,7 @@ class SW_DLT:
                 file = "{0}/{1}".format(self.file_id, files[0])
                 output = {
                     "output_code": "success",
+                    "app_name": os.environ.get("APPNAME", ""),
                     "file_name": os.path.abspath(file),
                     "file_title": self.date_id
                 }
@@ -392,6 +452,7 @@ class SW_DLT:
                 shutil.make_archive(self.file_id, "zip", self.file_id)
                 output = {
                     "output_code": "success",
+                    "app_name": os.environ.get("APPNAME", ""),
                     "file_name": os.path.abspath(self.file_id + ".zip"),
                     "file_title": self.date_id
                 }
@@ -424,6 +485,7 @@ class SW_DLT:
             shutil.rmtree(self.file_id, True)
             output = {
                 "output_code": "success",
+                "app_name": os.environ.get("APPNAME", ""),
                 "file_name": os.path.abspath(self.file_id + ".zip"),
                 "file_title": pl_title
             }

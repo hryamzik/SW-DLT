@@ -1,0 +1,28 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Source plists must always point at main; branch builds get their
+      # branch URLs from `make build` (scripts/branch_build.py) instead.
+      - name: Repo URLs point at main
+        run: make check-urls
+
+      - name: Shortcut text tokens and shell payload
+        run: make verify
+
+      - name: Unit tests
+        run: make test
