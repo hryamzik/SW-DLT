@@ -288,6 +288,10 @@ TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
+def stable_id(filename, role):
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, f"https://github.com/hryamzik/SW-DLT/{filename}#{role}")).upper()
+
+
 def main():
     root = os.path.join(os.path.dirname(__file__), "..", "src")
     specs = [
@@ -298,9 +302,10 @@ def main():
         content = TEMPLATE.format(
             title=title,
             args=args,
-            input_group=str(uuid.uuid4()).upper(),
-            empty_group=str(uuid.uuid4()).upper(),
-            dict_uuid=str(uuid.uuid4()).upper(),
+            # Deterministic IDs so rebuilding doesn't churn the committed plists.
+            input_group=stable_id(filename, "input_group"),
+            empty_group=stable_id(filename, "empty_group"),
+            dict_uuid=stable_id(filename, "dict_uuid"),
         )
         path = os.path.join(root, filename)
         with open(path, "w", encoding="utf-8") as fh:
