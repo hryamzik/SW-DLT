@@ -1,0 +1,43 @@
+name: Release
+
+# Publishing = merging a change to api/updates/latest.json into main.
+# Order: bump the version in src/SW-DLT.plist, `make build` on main and commit the
+# signed SW-DLT*.shortcut files, then set latest.json (new version + iCloud link)
+# and release_links.json. scripts/prepare_release.py refuses anything inconsistent.
+on:
+  push:
+    branches: [main]
+    paths: [api/updates/latest.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # prepare_release.py compares commit times of binaries vs plists
+
+      - name: Validate metadata and write notes
+        id: meta
+        run: echo "version=$(python3 scripts/prepare_release.py --notes-out notes.md)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists; nothing to do."
+            exit 0
+          fi
+          gh release create "v$VERSION" \
+            SW-DLT.shortcut SW-DLT-Audio.shortcut SW-DLT-Video-720p.shortcut \
+            --title "SW-DLT $VERSION" \
+            --notes-file notes.md \
+            --target "$GITHUB_SHA"
