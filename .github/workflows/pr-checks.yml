@@ -1,0 +1,25 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Installer/update URLs may point at a feature branch while it is being
+      # tested on a phone; they must point back at the target branch to merge.
+      - name: Repo URLs point at target branch
+        run: python3 scripts/check_branch_urls.py --branch "${{ github.base_ref || github.ref_name }}"
+
+      - name: Shortcut text tokens and shell payload
+        run: make verify
