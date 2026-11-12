@@ -52,6 +52,18 @@ def candidate_site_dirs():
     return seen
 
 
+def remove_pip_leftovers():
+    """Delete "~name" dirs pip leaves behind when an upgrade is interrupted.
+
+    pip renames a package to ~xxx while replacing it; if a-Shell is closed
+    mid-upgrade the dir stays and every later pip run prints
+    "WARNING: Ignoring invalid distribution ~t-dlp".
+    """
+    for site_dir in candidate_site_dirs():
+        for leftover in glob.glob(os.path.join(site_dir, "~*")):
+            shutil.rmtree(leftover, ignore_errors=True)
+
+
 def extend_ytdlp_sys_path():
     for site_dir in candidate_site_dirs():
         if os.path.isdir(site_dir) and site_dir not in sys.path:
@@ -69,6 +81,7 @@ def load_yt_dlp():
     except ImportError:
         pass
     pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
+    remove_pip_leftovers()
     subprocess.run(
         [pip, "-m", "pip", "install", *Consts.PIP_PACKAGES,
          "-q", "--disable-pip-version-check", "--upgrade"],
@@ -300,6 +313,7 @@ class SW_DLT:
 
         pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
         if int(current_time.timestamp()) - last_check < 600:
+            remove_pip_leftovers()
             subprocess.run(
                 [pip, "-m", "pip", "install", *Consts.PIP_PACKAGES,
                  "-q", "--disable-pip-version-check", "--upgrade"],
