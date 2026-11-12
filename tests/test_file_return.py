@@ -63,9 +63,13 @@ class FileReturnTests(unittest.TestCase):
         by_id = {a['WFWorkflowActionParameters']['UUID']: a for a in actions if 'UUID' in a['WFWorkflowActionParameters']}
         self.assertFalse(any(a['WFWorkflowActionIdentifier'].endswith('.GetFileIntent') for a in actions))
         selector = next(a['WFWorkflowActionParameters'] for a in actions if a['WFWorkflowActionParameters'].get('WFConditionalActionString') == 'a-Shell')
-        self.assertEqual(selector['WFInput']['Variable']['Value']['Aggrandizements'][0]['DictionaryKey'], 'app_name')
-        app_input = by_id[selector['WFInput']['Variable']['Value']['OutputUUID']]
-        self.assertEqual(app_input['WFWorkflowActionIdentifier'], 'is.workflow.actions.detect.dictionary')
+        # The If must compare text: a dictionary-key aggrandizement on a Dictionary leaves the
+        # "is" value blank on iOS 27.2 ("Please choose a value for each parameter in this action").
+        selector_var = selector['WFInput']['Variable']['Value']
+        self.assertEqual(selector_var['Aggrandizements'][0]['CoercionItemClass'], 'WFStringContentItem')
+        app_input = by_id[selector_var['OutputUUID']]
+        self.assertEqual(app_input['WFWorkflowActionIdentifier'], 'is.workflow.actions.getvalueforkey')
+        self.assertEqual(app_input['WFWorkflowActionParameters']['WFDictionaryKey'], 'app_name')
         start = next(i for i, a in enumerate(actions) if a['WFWorkflowActionParameters'] is selector)
         group = [i for i in range(start, len(actions)) if actions[i]['WFWorkflowActionParameters'].get('GroupingIdentifier') == selector['GroupingIdentifier']]
         otherwise, end = group[1:]

@@ -1,24 +1,39 @@
+# On main, `make build` writes the signed shortcuts to the repo root (commit them).
+# On any other branch it writes them to build/ (git-ignored) with the installer and a
+# per-run refresh step pointing at that branch's SW_DLT.py (see scripts/branch_build.py),
+# so branch builds can never be committed or merged by accident.
+BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+OUT := $(if $(filter main,$(BRANCH)),.,build)
+SHORTCUTS := SW-DLT SW-DLT-Audio SW-DLT-Video-720p
+SIGN = shortcuts sign --mode people-who-know-me
+
+.PHONY: verify test check-urls build test-shortcut clean
+
 verify:
 	@python3 scripts/verify_shortcut_shell.py
+
+test:
+	@python3 -m unittest discover -s tests
 
 check-urls:
 	@python3 scripts/check_branch_urls.py --branch main
 
 build: verify
 	@python3 scripts/generate_quick_shortcuts.py
-	@cp -v src/SW-DLT.plist SW-DLT-unsigned.shortcut
-	@shortcuts sign --mode people-who-know-me --input "SW-DLT-unsigned.shortcut" --output "SW-DLT.shortcut"
-	@rm SW-DLT-unsigned.shortcut
-	@cp -v src/SW-DLT-Audio.plist SW-DLT-Audio-unsigned.shortcut
-	@shortcuts sign --mode people-who-know-me --input "SW-DLT-Audio-unsigned.shortcut" --output "SW-DLT-Audio.shortcut"
-	@rm SW-DLT-Audio-unsigned.shortcut
-	@cp -v src/SW-DLT-Video-720p.plist SW-DLT-Video-720p-unsigned.shortcut
-	@shortcuts sign --mode people-who-know-me --input "SW-DLT-Video-720p-unsigned.shortcut" --output "SW-DLT-Video-720p.shortcut"
-	@rm SW-DLT-Video-720p-unsigned.shortcut
+	@mkdir -p build/tmp $(OUT)
+	@for name in $(SHORTCUTS); do \
+	  python3 scripts/branch_build.py "$(BRANCH)" "src/$$name.plist" "build/tmp/$$name.shortcut" && \
+	  $(SIGN) --input "build/tmp/$$name.shortcut" --output "$(OUT)/$$name.shortcut" && \
+	  echo "signed $(OUT)/$$name.shortcut" || exit 1; \
+	done
+	@rm -rf build/tmp
+
 test-shortcut:
-	@cp -v src/SW-DLT-OutputTest.plist SW-DLT-OutputTest-unsigned.shortcut
-	@shortcuts sign --mode people-who-know-me --input "SW-DLT-OutputTest-unsigned.shortcut" --output "SW-DLT-OutputTest.shortcut"
-	@rm SW-DLT-OutputTest-unsigned.shortcut
+	@mkdir -p build/tmp
+	@cp src/SW-DLT-OutputTest.plist build/tmp/SW-DLT-OutputTest.shortcut
+	@$(SIGN) --input build/tmp/SW-DLT-OutputTest.shortcut --output build/SW-DLT-OutputTest.shortcut
+	@rm -rf build/tmp
+	@echo "signed build/SW-DLT-OutputTest.shortcut"
 
 clean:
-	@rm -fvf SW-DLT-unsigned.shortcut SW-DLT.shortcut SW-DLT-Audio-unsigned.shortcut SW-DLT-Audio.shortcut SW-DLT-Video-720p-unsigned.shortcut SW-DLT-Video-720p.shortcut SW-DLT-OutputTest-unsigned.shortcut SW-DLT-OutputTest.shortcut
+	@rm -rfv build

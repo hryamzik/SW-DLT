@@ -44,7 +44,10 @@ See [Docs.md](Docs.md) for full feature documentation.
 - Support for both a-Shell and a-Shell Mini apps
 
 ## Build the Shortcut
-1. Run `make build` — runs `make verify`, regenerates quick shortcut plists, and re-signs `SW-DLT*.shortcut` at the repo root (commit those binaries when plist sources change).
+1. Run `make build` — runs `make verify`, regenerates quick shortcut plists, and signs the shortcuts.
+   - On `main` they are written to the repo root as `SW-DLT*.shortcut` (commit those binaries when plist sources change).
+   - On any other branch they go to `build/` (git-ignored) and download `SW_DLT.py` from that branch, refreshing it on every run, so a phone can test unmerged script changes. Source plists always point at `main`; nothing needs reverting before merge.
+   - `make test` runs the unit tests; `make test-shortcut` builds `build/SW-DLT-OutputTest.shortcut`.
 2. Source files: `src/SW-DLT.plist`, `src/SW-DLT-Audio.plist`, `src/SW-DLT-Video-720p.plist`
 3. Change the extension from `.plist` to `.shortcut` if signing manually
 4. Sign the shortcut with Apple (see "Ways to sign shortcuts" section below)

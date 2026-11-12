@@ -2539,6 +2539,44 @@ GLOBAL SETTINGS INITIALIZATION</string>
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.getvalueforkey</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>CustomOutputName</key>
+				<string>appName</string>
+				<key>UUID</key>
+				<string>AE9E0B6D-62ED-42EA-A568-8F62F1370B85</string>
+				<key>WFDictionaryKey</key>
+				<string>app_name</string>
+				<key>WFGetDictionaryValueType</key>
+				<string>Value</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Aggrandizements</key>
+						<array>
+							<dict>
+								<key>CoercionItemClass</key>
+								<string>WFDictionaryContentItem</string>
+								<key>Type</key>
+								<string>WFCoercionVariableAggrandizement</string>
+							</dict>
+						</array>
+						<key>OutputName</key>
+						<string>decodedOutput</string>
+						<key>OutputUUID</key>
+						<string>F35C50B2-BBE6-46B3-BC48-24DEF547161C</string>
+						<key>Type</key>
+						<string>ActionOutput</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
 			<string>is.workflow.actions.text.replace</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
@@ -2600,16 +2638,16 @@ GLOBAL SETTINGS INITIALIZATION</string>
 							<key>Aggrandizements</key>
 							<array>
 								<dict>
-									<key>DictionaryKey</key>
-									<string>app_name</string>
+									<key>CoercionItemClass</key>
+									<string>WFStringContentItem</string>
 									<key>Type</key>
-									<string>WFDictionaryValueVariableAggrandizement</string>
+									<string>WFCoercionVariableAggrandizement</string>
 								</dict>
 							</array>
 							<key>OutputName</key>
-							<string>dOutDict</string>
+							<string>appName</string>
 							<key>OutputUUID</key>
-							<string>FE07233D-926D-4AD2-AF72-C50EB998A6F6</string>
+							<string>AE9E0B6D-62ED-42EA-A568-8F62F1370B85</string>
 							<key>Type</key>
 							<string>ActionOutput</string>
 						</dict>
@@ -3057,7 +3095,7 @@ $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install chardet requests cer
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -m pip install yt-dlp yt-dlp-ejs yt-dlp-apple-webkit-jsi gallery-dl -q --disable-pip-version-check --upgrade --force-reinstall
 $HOME/Documents/SW-DLT/SW-DLT-ENV/bin/python -c "import yt_dlp"
 echo 0 &gt; $HOME/Documents/SW-DLT/shortcut_update_ts.txt
-curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/fix/ios27-output-and-bugs/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
+curl -sL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/main/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py
 open shortcuts://
 clear &amp;&amp; cd
 exit</string>
@@ -8177,42 +8215,6 @@ URL: ￼</string>
 				<string>7B45A838-4A58-48A7-B537-B09C6A81DC0D</string>
 				<key>WFControlFlowMode</key>
 				<integer>2</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>WFWorkflowActionIdentifier</key>
-			<string>is.workflow.actions.comment</string>
-			<key>WFWorkflowActionParameters</key>
-			<dict>
-				<key>WFCommentActionText</key>
-				<string>TEMP (branch testing only): refresh SW_DLT.py from the fix branch on every run. Remove before merging to main; CI check_branch_urls fails while this exists.</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>WFWorkflowActionIdentifier</key>
-			<string>AsheKube.app.a-Shell.ExecuteCommandIntent</string>
-			<key>WFWorkflowActionParameters</key>
-			<dict>
-				<key>ShowWhenRun</key>
-				<false/>
-				<key>UUID</key>
-				<string>B248BB46-ABD5-41D4-8FD3-A89DCE97741E</string>
-				<key>command</key>
-				<dict>
-					<key>Value</key>
-					<dict>
-						<key>attachmentsByRange</key>
-						<dict/>
-						<key>string</key>
-						<string>curl -sfL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/fix/ios27-output-and-bugs/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py.new &amp;&amp; mv $HOME/Documents/SW-DLT/SW_DLT.py.new $HOME/Documents/SW-DLT/SW_DLT.py</string>
-					</dict>
-					<key>WFSerializationType</key>
-					<string>WFTextTokenString</string>
-				</dict>
-				<key>keepGoing</key>
-				<false/>
-				<key>openWindow</key>
-				<string>close</string>
 			</dict>
 		</dict>
 		<dict>
