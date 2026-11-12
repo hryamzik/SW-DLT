@@ -355,7 +355,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 									<key>Value</key>
 									<dict>
 										<key>string</key>
-										<string>4.3.0</string>
+										<string>4.4.0</string>
 									</dict>
 									<key>WFSerializationType</key>
 									<string>WFTextTokenString</string>
