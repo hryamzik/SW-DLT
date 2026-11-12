@@ -12,5 +12,10 @@ build: verify
 	@cp -v src/SW-DLT-Video-720p.plist SW-DLT-Video-720p-unsigned.shortcut
 	@shortcuts sign --mode people-who-know-me --input "SW-DLT-Video-720p-unsigned.shortcut" --output "SW-DLT-Video-720p.shortcut"
 	@rm SW-DLT-Video-720p-unsigned.shortcut
+test-shortcut:
+	@cp -v src/SW-DLT-OutputTest.plist SW-DLT-OutputTest-unsigned.shortcut
+	@shortcuts sign --mode people-who-know-me --input "SW-DLT-OutputTest-unsigned.shortcut" --output "SW-DLT-OutputTest.shortcut"
+	@rm SW-DLT-OutputTest-unsigned.shortcut
+
 clean:
-	@rm -fvf SW-DLT-unsigned.shortcut SW-DLT.shortcut SW-DLT-Audio-unsigned.shortcut SW-DLT-Audio.shortcut SW-DLT-Video-720p-unsigned.shortcut SW-DLT-Video-720p.shortcut
+	@rm -fvf SW-DLT-unsigned.shortcut SW-DLT.shortcut SW-DLT-Audio-unsigned.shortcut SW-DLT-Audio.shortcut SW-DLT-Video-720p-unsigned.shortcut SW-DLT-Video-720p.shortcut SW-DLT-OutputTest-unsigned.shortcut SW-DLT-OutputTest.shortcut

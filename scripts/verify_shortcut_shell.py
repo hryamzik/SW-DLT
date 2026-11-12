@@ -51,6 +51,36 @@ def check_attachments(label: str, text: str, attachments: dict) -> None:
             )
 
 
+def check_all_token_offsets(paths: list[Path]) -> None:
+    """Every text token in every shortcut must point at an object marker.
+
+    Shortcuts stores variable positions as UTF-16 offsets; editing the text
+    without moving the offset silently corrupts the generated string.
+    """
+    def walk(node, where):
+        if isinstance(node, dict):
+            if "attachmentsByRange" in node and "string" in node:
+                raw = node["string"].encode("utf-16-le")
+                for key in node["attachmentsByRange"]:
+                    start, length = (int(x) for x in key.strip("{}").split(","))
+                    chunk = raw[start * 2 : (start + length) * 2].decode("utf-16-le", "replace")
+                    if chunk != OBJ * length:
+                        raise SystemExit(
+                            f"{where}: token {key} points at {chunk!r}, not {OBJ!r} "
+                            f"(text starts {node['string'][:60]!r})"
+                        )
+            for k, v in node.items():
+                walk(v, f"{where}/{k}")
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{where}[{i}]")
+
+    for path in paths:
+        if path.exists():
+            with path.open("rb") as fh:
+                walk(plistlib.load(fh), path.name)
+
+
 def build_cli_payload(url: str, args: str) -> str:
     return f"RUN||{url}||{args}"
 
@@ -87,6 +117,7 @@ def run_python_argv(argv_tail: list[str]) -> None:
 
 
 def main() -> int:
+    check_all_token_offsets(sorted((ROOT / "src").glob("SW-DLT*.plist")))
     actions = load_actions()
     cli_params = find_text_action(actions, "cliPayload")
     run_params = find_text_action(actions, "runScript")

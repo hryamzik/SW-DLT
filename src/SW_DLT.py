@@ -6,6 +6,7 @@ import subprocess
 import importlib
 import datetime
 import hashlib
+import glob
 import shutil
 import base64
 import json
@@ -24,23 +25,43 @@ class Consts:
     )
 
 
-def extend_ytdlp_sys_path():
-    """Match venv and a-Shell user site-packages (see net00-1/SW-DLT#141 / PR #145)."""
-    py_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+def candidate_site_dirs():
+    """Venv and a-Shell user site-packages (see net00-1/SW-DLT#141 / PR #145).
+
+    The running interpreter's version comes first, but any other pythonX.Y
+    found is also tried: a-Shell updates (and the macOS build) can ship a
+    different Python than the one the venv was created with.
+    """
     home = os.environ["HOME"]
-    for site_dir in (
-        os.path.join(home, "Documents", "SW-DLT", "SW-DLT-ENV", "lib", py_version, "site-packages"),
-        os.path.join(home, "Library", "lib", py_version, "site-packages"),
-    ):
+    py_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    roots = (
+        os.path.join(Consts.WORKSPACE, "SW-DLT-ENV", "lib"),
+        os.path.join(home, "Library", "lib"),
+    )
+    dirs = [os.path.join(root, py_version, "site-packages") for root in roots]
+    for root in roots:
+        dirs.extend(sorted(glob.glob(os.path.join(root, "python3*", "site-packages")), reverse=True))
+    seen = []
+    for site_dir in dirs:
+        if site_dir not in seen:
+            seen.append(site_dir)
+    return seen
+
+
+def extend_ytdlp_sys_path():
+    for site_dir in candidate_site_dirs():
         if os.path.isdir(site_dir) and site_dir not in sys.path:
             sys.path.append(site_dir)
+    # Directories that appeared after start-up (e.g. right after pip) are
+    # otherwise ignored by the cached path finders.
+    importlib.invalidate_caches()
 
 
 def load_yt_dlp():
     """Import yt-dlp from the SW-DLT venv or a-Shell user site; pip into venv if needed."""
     extend_ytdlp_sys_path()
     try:
-        return __import__("yt_dlp")
+        return importlib.import_module("yt_dlp")
     except ImportError:
         pass
     pip = Consts.VENV_PYTHON if os.path.isfile(Consts.VENV_PYTHON) else sys.executable
@@ -49,7 +70,17 @@ def load_yt_dlp():
          "-q", "--disable-pip-version-check", "--upgrade"],
         check=False,
     )
-    return __import__("yt_dlp")
+    # Re-scan: the site-packages dir may only exist now that pip has run.
+    extend_ytdlp_sys_path()
+    try:
+        return importlib.import_module("yt_dlp")
+    except ImportError as ex:
+        found = [d for d in candidate_site_dirs() if os.path.isdir(d)]
+        raise Exception(
+            f"{ex}\npython: {sys.executable} ({sys.version.split()[0]})\n"
+            f"HOME: {os.environ.get('HOME')}\n"
+            f"site dirs found: {found or 'none'}"
+        ) from ex
 
 
 def unpack_run_payload(arg_list):
@@ -274,7 +305,7 @@ class SW_DLT:
             "bestvideo[height={0}][fps<={1}]+bestaudio/"\
             "best[height={0}][fps<={1}]/"\
             "bestvideo[height<={0}][fps<={1}]+bestaudio/"\
-            "best[height<={0}][fps<={1}]"\
+            "best[height<={0}][fps<={1}]/"\
             "best[height={0}]".format(self.video_res, self.video_fps)
 
         dl_options = {
@@ -360,7 +391,7 @@ class SW_DLT:
                 }
                 return f'shortcuts://run-shortcut?name=SW-DLT&input=text&text={urllib.parse.quote(json.dumps(output))}'
         # If for some reason the above doesn't find the downloaded file, we raise generic Exception
-        raise Exception(Consts.DERROR)
+        raise Exception(Consts.DERROR_EXC)
 
     def gallery_download(self):
         try:

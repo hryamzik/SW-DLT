@@ -2998,7 +2998,7 @@ exit</string>
 					<dict>
 						<key>attachmentsByRange</key>
 						<dict>
-							<key>{201, 1}</key>
+							<key>{234, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array>
@@ -3029,7 +3029,7 @@ then echo 0 &gt; $LAST_CHECK_TS
 fi
 
 TS_DATE=$(cat $LAST_CHECK_TS)
-DATE_DIFF=$((10))
+DATE_DIFF=$(($CURRENT_DATE - $TS_DATE))
 
 if [ $((DATE_DIFF / 86400)) -ge 1 ]
 then VER_CHECK=$(curl -sL $LATEST_VERSION)
@@ -5791,7 +5791,7 @@ END:VCARD</string>
 					<dict>
 						<key>attachmentsByRange</key>
 						<dict>
-							<key>{0, 1}</key>
+							<key>{3, 1}</key>
 							<dict>
 								<key>Aggrandizements</key>
 								<array/>
