@@ -31,7 +31,7 @@
 						<key>attachmentsByRange</key>
 						<dict/>
 						<key>string</key>
-						<string>dash -c 'cd $HOME/Documents/SW-DLT; for f in SW_DLT_DL_*; do case $f in *metadata*|*.part|*.ytdl|*.json) ;; *) printf %s $PWD/$f; break;; esac; done'</string>
+						<string>dash -c 'cd $HOME/Documents/SW-DLT; for f in SW_DLT_DL_*; do case $f in *metadata*|*.part|*.ytdl|*.json) ;; *) [ -e "$f" ] &amp;&amp; { printf %s $PWD/$f; exit; };; esac; done; printf "NO DOWNLOAD LEFT IN $PWD"'</string>
 					</dict>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenString</string>

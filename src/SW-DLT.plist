@@ -2539,16 +2539,12 @@ GLOBAL SETTINGS INITIALIZATION</string>
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
-			<string>AsheKube.app.a-Shell.GetFileIntent</string>
+			<string>is.workflow.actions.text.replace</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
-				<key>ShowWhenRun</key>
-				<false/>
 				<key>UUID</key>
-				<string>4B12BAD9-0438-4485-9AE0-90B7C86F528C</string>
-				<key>errorIfNotFound</key>
-				<true/>
-				<key>fileName</key>
+				<string>B15B0561-193A-4922-80E0-B3145742DEF8</string>
+				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
 					<dict>
@@ -2570,6 +2566,183 @@ GLOBAL SETTINGS INITIALIZATION</string>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenString</string>
 				</dict>
+				<key>WFReplaceTextCaseSensitive</key>
+				<true/>
+				<key>WFReplaceTextFind</key>
+				<string>^.*?/Documents/SW-DLT/</string>
+				<key>WFReplaceTextRegularExpression</key>
+				<true/>
+				<key>WFReplaceTextReplace</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>A3ACEEE5-6765-457C-8A80-7EDC20DD014A</string>
+				<key>WFCondition</key>
+				<integer>4</integer>
+				<key>WFConditionalActionString</key>
+				<string>a-Shell</string>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>WFInput</key>
+				<dict>
+					<key>Type</key>
+					<string>Variable</string>
+					<key>Variable</key>
+					<dict>
+						<key>Value</key>
+						<dict>
+							<key>Aggrandizements</key>
+							<array>
+								<dict>
+									<key>DictionaryKey</key>
+									<string>app_name</string>
+									<key>Type</key>
+									<string>WFDictionaryValueVariableAggrandizement</string>
+								</dict>
+							</array>
+							<key>OutputName</key>
+							<string>dOutDict</string>
+							<key>OutputUUID</key>
+							<string>FE07233D-926D-4AD2-AF72-C50EB998A6F6</string>
+							<key>Type</key>
+							<string>ActionOutput</string>
+						</dict>
+						<key>WFSerializationType</key>
+						<string>WFTextTokenAttachment</string>
+					</dict>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.documentpicker.open</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>98962673-4E34-41FF-AEBD-611145312D0E</string>
+				<key>WFFile</key>
+				<dict>
+					<key>displayName</key>
+					<string>SW-DLT</string>
+					<key>fileLocation</key>
+					<dict>
+						<key>WFFileLocationType</key>
+						<string>LocalStorage</string>
+						<key>appContainerBundleIdentifier</key>
+						<string>AsheKube.app.a-Shell</string>
+						<key>fileProviderDomainID</key>
+						<string>com.apple.FileProvider.LocalStorage</string>
+						<key>relativeSubpath</key>
+						<string>SW-DLT</string>
+					</dict>
+					<key>filename</key>
+					<string>SW-DLT</string>
+				</dict>
+				<key>WFFileErrorIfNotFound</key>
+				<true/>
+				<key>WFGetFilePath</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>attachmentsByRange</key>
+						<dict>
+							<key>{0, 1}</key>
+							<dict>
+								<key>OutputName</key>
+								<string>Updated Text</string>
+								<key>OutputUUID</key>
+								<string>B15B0561-193A-4922-80E0-B3145742DEF8</string>
+								<key>Type</key>
+								<string>ActionOutput</string>
+							</dict>
+						</dict>
+						<key>string</key>
+						<string>￼</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>A3ACEEE5-6765-457C-8A80-7EDC20DD014A</string>
+				<key>WFControlFlowMode</key>
+				<integer>1</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.documentpicker.open</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>C77DEAA2-DB2A-40E8-92EE-EFFDDA713F80</string>
+				<key>WFFile</key>
+				<dict>
+					<key>displayName</key>
+					<string>SW-DLT</string>
+					<key>fileLocation</key>
+					<dict>
+						<key>WFFileLocationType</key>
+						<string>LocalStorage</string>
+						<key>appContainerBundleIdentifier</key>
+						<string>AsheKube.app.a-Shell-mini</string>
+						<key>fileProviderDomainID</key>
+						<string>com.apple.FileProvider.LocalStorage</string>
+						<key>relativeSubpath</key>
+						<string>SW-DLT</string>
+					</dict>
+					<key>filename</key>
+					<string>SW-DLT</string>
+				</dict>
+				<key>WFFileErrorIfNotFound</key>
+				<true/>
+				<key>WFGetFilePath</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>attachmentsByRange</key>
+						<dict>
+							<key>{0, 1}</key>
+							<dict>
+								<key>OutputName</key>
+								<string>Updated Text</string>
+								<key>OutputUUID</key>
+								<string>B15B0561-193A-4922-80E0-B3145742DEF8</string>
+								<key>Type</key>
+								<string>ActionOutput</string>
+							</dict>
+						</dict>
+						<key>string</key>
+						<string>￼</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.conditional</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>GroupingIdentifier</key>
+				<string>A3ACEEE5-6765-457C-8A80-7EDC20DD014A</string>
+				<key>UUID</key>
+				<string>4B12BAD9-0438-4485-9AE0-90B7C86F528C</string>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -2631,7 +2804,7 @@ GLOBAL SETTINGS INITIALIZATION</string>
 					<key>Value</key>
 					<dict>
 						<key>OutputName</key>
-						<string>File</string>
+						<string>If Result</string>
 						<key>OutputUUID</key>
 						<string>4B12BAD9-0438-4485-9AE0-90B7C86F528C</string>
 						<key>Type</key>
@@ -4070,10 +4243,6 @@ Changelog:
 				<string>payloadURL</string>
 				<key>UUID</key>
 				<string>C9D0E1F2-A3B4-5678-9ABC-DEF012345678</string>
-				<key>WFItemIndex</key>
-				<string>1</string>
-				<key>WFItemSpecifier</key>
-				<string>Item At Index</string>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
@@ -4088,6 +4257,10 @@ Changelog:
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
+				<key>WFItemIndex</key>
+				<string>1</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
 			</dict>
 		</dict>
 		<dict>
@@ -4122,10 +4295,6 @@ Changelog:
 				<string>payloadArgs</string>
 				<key>UUID</key>
 				<string>D0E1F2A3-B4C5-6789-ABCD-EF0123456789</string>
-				<key>WFItemIndex</key>
-				<string>2</string>
-				<key>WFItemSpecifier</key>
-				<string>Item At Index</string>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
@@ -4140,6 +4309,10 @@ Changelog:
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
+				<key>WFItemIndex</key>
+				<string>2</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
 			</dict>
 		</dict>
 		<dict>
@@ -4915,10 +5088,6 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 				<string>partialURL</string>
 				<key>UUID</key>
 				<string>F3A4B5C6-D7E8-9012-3456-789ABCDEF012</string>
-				<key>WFItemIndex</key>
-				<string>1</string>
-				<key>WFItemSpecifier</key>
-				<string>Item At Index</string>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
@@ -4942,6 +5111,10 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
+				<key>WFItemIndex</key>
+				<string>1</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
 			</dict>
 		</dict>
 		<dict>
@@ -4953,10 +5126,6 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 				<string>partialArgs</string>
 				<key>UUID</key>
 				<string>A4B5C6D7-E8F9-0123-4567-89ABCDEF0123</string>
-				<key>WFItemIndex</key>
-				<string>1</string>
-				<key>WFItemSpecifier</key>
-				<string>Item At Index</string>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
@@ -4980,6 +5149,10 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
+				<key>WFItemIndex</key>
+				<string>1</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
 			</dict>
 		</dict>
 		<dict>
@@ -5146,10 +5319,6 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 				<string>resumeURL</string>
 				<key>UUID</key>
 				<string>E8F9A0B1-C2D3-4567-89AB-CDEF01234567</string>
-				<key>WFItemIndex</key>
-				<string>1</string>
-				<key>WFItemSpecifier</key>
-				<string>Item At Index</string>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
@@ -5164,6 +5333,10 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
+				<key>WFItemIndex</key>
+				<string>1</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
 			</dict>
 		</dict>
 		<dict>
@@ -5198,10 +5371,6 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 				<string>resumeMode</string>
 				<key>UUID</key>
 				<string>F9A0B1C2-D3E4-5678-9ABC-DEF012345678</string>
-				<key>WFItemIndex</key>
-				<string>2</string>
-				<key>WFItemSpecifier</key>
-				<string>Item At Index</string>
 				<key>WFInput</key>
 				<dict>
 					<key>Value</key>
@@ -5216,6 +5385,10 @@ Partial or unsaved download found: ￼ Would you like to resume it?</string>
 					<key>WFSerializationType</key>
 					<string>WFTextTokenAttachment</string>
 				</dict>
+				<key>WFItemIndex</key>
+				<string>2</string>
+				<key>WFItemSpecifier</key>
+				<string>Item At Index</string>
 			</dict>
 		</dict>
 		<dict>

@@ -10,6 +10,7 @@ import glob
 import shutil
 import base64
 import json
+import time
 import sys
 import os
 
@@ -19,6 +20,9 @@ class Consts:
     DERROR_EXC = '{"output_code":"exception","exc_trace":"vars.downloadError"}'
     WORKSPACE = os.path.join(os.environ["HOME"], "Documents", "SW-DLT")
     VENV_PYTHON = os.path.join(WORKSPACE, "SW-DLT-ENV", "bin", "python")
+    COOKIE_FILE = os.path.join(os.environ["HOME"], "Library", "Cookies", "Cookies.binarycookies")
+    # WebKit may not flush the cookie jar until a-Shell is backgrounded (net00-1/SW-DLT#153)
+    COOKIE_WAIT_SECS = 10
     PIP_PACKAGES = (
         "chardet", "requests", "certifi", "mutagen",
         "yt-dlp", "yt-dlp-ejs", "yt-dlp-apple-webkit-jsi", "gallery-dl",
@@ -137,6 +141,7 @@ class SW_DLT:
         if self.primary_action not in processes:
             raise ValueError("Missing required arguments from shortcut (media URL and mode)")
         self.run = processes[self.primary_action]
+        self.use_cookies = True
         # SponsorBlock categories
         valid_sb_categories = {
             "sponsor",
@@ -263,19 +268,25 @@ class SW_DLT:
                 parsed.append(cat)
         return parsed
 
-    @staticmethod
-    def update_check():
+    def update_check(self):
         current_time = datetime.datetime.today()
         show_progress("util", 0, 2)
-        if not os.path.exists(f"{os.environ['HOME']}/Library/Cookies/Cookies.binarycookies"):
+        if not os.path.exists(Consts.COOKIE_FILE):
             cookie_expiration = current_time.replace(year=current_time.year + 1).strftime('%a, %-d %b %Y %H:%M:%S UTC')
             set_cookie = f"echo 'document.cookie = \"installed=1; expires={cookie_expiration}; sameSite=Lax\";' | jsi"
             subprocess.run(set_cookie)
 
-        #We need to wait for delay in jsi command
-        while not os.path.exists(f"{os.environ['HOME']}/Library/Cookies/Cookies.binarycookies"):
-            subprocess.run("sleep 1")
-        
+            # Wait for the jsi command to create the cookie jar, but not forever:
+            # an unbounded wait hangs the download at "Loading: 0.0%".
+            deadline = time.monotonic() + Consts.COOKIE_WAIT_SECS
+            while not os.path.exists(Consts.COOKIE_FILE) and time.monotonic() < deadline:
+                time.sleep(1)
+
+        if not os.path.exists(Consts.COOKIE_FILE):
+            # yt-dlp and gallery-dl fail outright on a missing Safari cookie jar
+            self.use_cookies = False
+            self.ytdlp_globals.pop("cookiesfrombrowser", None)
+
         show_progress("util", 1, 2)
 
         ts_path = os.path.join(Consts.WORKSPACE, "shortcut_update_ts.txt")
@@ -386,6 +397,7 @@ class SW_DLT:
             if file.startswith(self.file_id):
                 output = {
                     "output_code": "success",
+                    "app_name": os.environ.get("APPNAME", ""),
                     "file_name": os.path.abspath(file),
                     "file_title": vid_title
                 }
@@ -397,8 +409,10 @@ class SW_DLT:
         try:
             # Creating temp folder to store media
             os.makedirs(self.file_id, exist_ok=True)
-            dl_cmd = "gallery-dl {0} --range \"{1}\" --directory {2} --cookies-from-browser safari".format(
+            dl_cmd = "gallery-dl {0} --range \"{1}\" --directory {2}".format(
                 self.media_url, self.gallery_range, self.file_id)
+            if self.use_cookies:
+                dl_cmd += " --cookies-from-browser safari"
                 
             with subprocess.Popen(dl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True) as gdl:
                 for entry in gdl.stdout:
@@ -414,6 +428,7 @@ class SW_DLT:
                 file = "{0}/{1}".format(self.file_id, files[0])
                 output = {
                     "output_code": "success",
+                    "app_name": os.environ.get("APPNAME", ""),
                     "file_name": os.path.abspath(file),
                     "file_title": self.date_id
                 }
@@ -423,6 +438,7 @@ class SW_DLT:
                 shutil.make_archive(self.file_id, "zip", self.file_id)
                 output = {
                     "output_code": "success",
+                    "app_name": os.environ.get("APPNAME", ""),
                     "file_name": os.path.abspath(self.file_id + ".zip"),
                     "file_title": self.date_id
                 }
@@ -455,6 +471,7 @@ class SW_DLT:
             shutil.rmtree(self.file_id, True)
             output = {
                 "output_code": "success",
+                "app_name": os.environ.get("APPNAME", ""),
                 "file_name": os.path.abspath(self.file_id + ".zip"),
                 "file_title": pl_title
             }
