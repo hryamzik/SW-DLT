@@ -55,7 +55,9 @@ def check_token_safe(node, old: str) -> None:
 
 def refresh_actions(script_url: str, branch: str) -> list[dict]:
     target = "$HOME/Documents/SW-DLT/SW_DLT.py"
-    command = f"curl -sfL {script_url} -o {target}.new && mv {target}.new {target}"
+    # a-Shell runs "close" commands without a shell, so && must go through dash
+    # (like the shortcut's other close-mode commands); otherwise curl gets "&&" as a URL (exit 3).
+    command = f"dash -c 'curl -sfL {script_url} -o {target}.new && mv {target}.new {target}'"
     return [
         {
             "WFWorkflowActionIdentifier": "is.workflow.actions.comment",
