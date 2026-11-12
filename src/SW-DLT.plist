@@ -8181,6 +8181,42 @@ URL: ￼</string>
 		</dict>
 		<dict>
 			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.comment</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFCommentActionText</key>
+				<string>TEMP (branch testing only): refresh SW_DLT.py from the fix branch on every run. Remove before merging to main; CI check_branch_urls fails while this exists.</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>AsheKube.app.a-Shell.ExecuteCommandIntent</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>ShowWhenRun</key>
+				<false/>
+				<key>UUID</key>
+				<string>B248BB46-ABD5-41D4-8FD3-A89DCE97741E</string>
+				<key>command</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>attachmentsByRange</key>
+						<dict/>
+						<key>string</key>
+						<string>curl -sfL https://raw.githubusercontent.com/hryamzik/SW-DLT/refs/heads/fix/ios27-output-and-bugs/src/SW_DLT.py -o $HOME/Documents/SW-DLT/SW_DLT.py.new &amp;&amp; mv $HOME/Documents/SW-DLT/SW_DLT.py.new $HOME/Documents/SW-DLT/SW_DLT.py</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+				<key>keepGoing</key>
+				<false/>
+				<key>openWindow</key>
+				<string>close</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
 			<string>is.workflow.actions.openapp</string>
 			<key>WFWorkflowActionParameters</key>
 			<dict>
