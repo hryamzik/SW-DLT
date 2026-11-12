@@ -32,12 +32,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.meta.outputs.version }}
         run: |
+          FILES="SW-DLT.shortcut SW-DLT-Audio.shortcut SW-DLT-Video-720p.shortcut"
           if gh release view "v$VERSION" >/dev/null 2>&1; then
-            echo "Release v$VERSION already exists; nothing to do."
+            # Same version again (e.g. corrected iCloud links): sync notes and files.
+            gh release edit "v$VERSION" --notes-file notes.md
+            gh release upload "v$VERSION" $FILES --clobber
+            echo "Updated existing release v$VERSION."
             exit 0
           fi
           gh release create "v$VERSION" \
-            SW-DLT.shortcut SW-DLT-Audio.shortcut SW-DLT-Video-720p.shortcut \
+            $FILES \
             --title "SW-DLT $VERSION" \
             --notes-file notes.md \
             --target "$GITHUB_SHA"
