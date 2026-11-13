@@ -57,7 +57,12 @@ def refresh_actions(script_url: str, branch: str) -> list[dict]:
     target = "$HOME/Documents/SW-DLT/SW_DLT.py"
     # a-Shell runs "close" commands without a shell, so && must go through dash
     # (like the shortcut's other close-mode commands); otherwise curl gets "&&" as a URL (exit 3).
-    command = f"dash -c 'curl -sfL {script_url} -o {target}.new && mv {target}.new {target}'"
+    # If the branch is gone (deleted after merge) curl exits 22; keep the current
+    # script instead of failing the whole shortcut.
+    command = (
+        f"dash -c 'curl -sfL {script_url} -o {target}.new && mv {target}.new {target}"
+        f" || {{ rm -f {target}.new; echo \"branch script unavailable, keeping current SW_DLT.py\"; }}'"
+    )
     return [
         {
             "WFWorkflowActionIdentifier": "is.workflow.actions.comment",
