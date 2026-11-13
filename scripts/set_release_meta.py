@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Write api/updates/latest.json and release_links.json for the version in src/SW-DLT.plist.
 
-  set_release_meta.py --check-bump
-      fail if src/SW-DLT.plist still has the version latest.json already announces
+  set_release_meta.py --bump {patch,minor,major}
+      if src/SW-DLT.plist still has the version latest.json announces, bump it and
+      commit just that change (git); if it is already newer, leave it as is
   set_release_meta.py [--main URL --audio URL --video URL] [--notes TEXT] [--date YYYY-MM-DD]
       write both files, then validate them with prepare_release.py. Missing links are
       read from the clipboard (pbpaste) one by one, missing notes are asked for; this
@@ -27,6 +28,49 @@ def write_json(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+PLIST_REL = "src/SW-DLT.plist"
+
+
+def parse(version: str) -> tuple[int, ...]:
+    try:
+        return tuple(int(part) for part in version.split("."))
+    except ValueError:
+        pr.fail(f"unsupported version {version!r} (expected e.g. 4.4.0)")
+
+
+def bump(version: str, part: str) -> str:
+    major, minor, patch = (parse(version) + (0, 0, 0))[:3]
+    if part == "major":
+        return f"{major + 1}.0.0"
+    if part == "minor":
+        return f"{major}.{minor + 1}.0"
+    return f"{major}.{minor}.{patch + 1}"
+
+
+def git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", *args], cwd=pr.ROOT, capture_output=True, text=True, check=check)
+
+
+def set_plist_version(old: str, new: str) -> None:
+    """Replace the metadata version in the plist and commit only that change.
+
+    The bump has to be its own commit, before the signed shortcuts are built and
+    committed: the release workflow rejects signed files older than their plist.
+    """
+    if git("diff", "--quiet", "HEAD", "--", PLIST_REL, check=False).returncode:
+        pr.fail(f"{PLIST_REL} has uncommitted changes: commit them first, then run make release")
+    path = pr.ROOT / PLIST_REL
+    text = path.read_text(encoding="utf-8")
+    needle = f"<string>{old}</string>"
+    if text.count(needle) != 1:
+        pr.fail(f"expected exactly one {needle} in {PLIST_REL}, found {text.count(needle)}")
+    path.write_text(text.replace(needle, f"<string>{new}</string>"), encoding="utf-8")
+    if pr.plist_version() != new:
+        path.write_text(text, encoding="utf-8")
+        pr.fail(f"replacing {needle} did not change the metadata version; {PLIST_REL} restored")
+    git("commit", "-q", "-m", f"Bump version to {new}", "--", PLIST_REL)
+
+
 def ask_clipboard_link(name: str) -> str:
     """Prompt until the clipboard holds an iCloud shortcut link."""
     while True:
@@ -40,7 +84,7 @@ def ask_clipboard_link(name: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check-bump", action="store_true")
+    parser.add_argument("--bump", choices=("patch", "minor", "major"))
     parser.add_argument("--main")
     parser.add_argument("--audio")
     parser.add_argument("--video")
@@ -51,11 +95,15 @@ def main() -> int:
     version = pr.plist_version()
     released = json.loads(pr.LATEST.read_text(encoding="utf-8")).get("version")
 
-    if args.check_bump:
-        if version == released:
-            pr.fail(f"src/SW-DLT.plist is still {version}, which latest.json already announces: "
-                    "bump the version first (or FORCE=1 to rebuild the same version)")
-        print(f"releasing {version} (current release {released})")
+    if args.bump:
+        if parse(version) > parse(released):
+            print(f"releasing {version} (already bumped; current release {released})")
+            return 0
+        if parse(version) < parse(released):
+            pr.fail(f"src/SW-DLT.plist version {version} is older than the released {released}")
+        new = bump(version, args.bump)
+        set_plist_version(version, new)
+        print(f"bumped {PLIST_REL} {version} -> {new} and committed it")
         return 0
 
     links = {"SW-DLT": args.main, "SW-DLT Audio": args.audio, "SW-DLT Video 720p": args.video}
