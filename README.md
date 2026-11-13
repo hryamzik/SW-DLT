@@ -64,8 +64,8 @@ Releases are published by `.github/workflows/release.yml` when a new `api/update
 
 1. Bump the version in `src/SW-DLT.plist` and commit.
 2. `make release` — refuses if the version wasn't bumped (`FORCE=1` to rebuild the same version), then builds the production shortcuts into the repo root (script from `main`, same as `make build` on `main`).
-3. Import the root `SW-DLT*.shortcut` files on a device and copy the three iCloud links.
-4. `make release-meta MAIN=<link> AUDIO=<link> VIDEO=<link> NOTES="what changed"` — writes `latest.json` and `release_links.json` and validates them.
+3. On a Mac, `make release` opens the three files in Shortcuts: import each, choosing **Replace** if asked (a renamed "SW-DLT 2" would break the callback and the quick shortcuts).
+4. `make release-meta` — asks you to Share › Copy iCloud Link for each shortcut and reads the clipboard, asks for the notes, then writes and validates `latest.json` and `release_links.json`. Non-interactive: `make release-meta MAIN=<link> AUDIO=<link> VIDEO=<link> NOTES="what changed"`.
 5. Commit the signed shortcuts and `api/updates/*.json`. Merging publishes `v<version>` with the shortcuts attached; installed shortcuts offer the update within a day.
 
 Note: a production build installs `SW_DLT.py` from `main`, so test script changes with a branch build (`make build`) before merging.

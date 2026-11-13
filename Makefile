@@ -29,17 +29,22 @@ build: verify
 	@rm -rf build/tmp
 
 # Production build from any branch: same output as `make build` on main (repo root,
-# script from main), so a release can be prepared in the feature PR itself.
+# script from main), so a release can be prepared in the feature PR itself. On macOS
+# the built files are opened in Shortcuts for import (choose Replace, not Keep Both:
+# a renamed "SW-DLT 2" would break the quick shortcuts and the download callback).
 release:
 	@$(if $(FORCE),,python3 scripts/set_release_meta.py --check-bump)
 	@$(MAKE) --no-print-directory build BRANCH=main
-	@echo
-	@echo "Next: import the root SW-DLT*.shortcut files on a device, copy their iCloud links, then"
-	@echo '  make release-meta MAIN=<link> AUDIO=<link> VIDEO=<link> NOTES="what changed"'
+	@if command -v open >/dev/null && [ "$$(uname)" = Darwin ]; then \
+	  for name in $(SHORTCUTS); do open "$$name.shortcut"; done; \
+	  echo; echo "Opened in Shortcuts: import each one, choosing Replace if asked."; \
+	fi
+	@echo "Next: make release-meta   (asks you to copy each iCloud link in Shortcuts and reads the clipboard)"
 
 # Writes api/updates/latest.json + release_links.json for the plist version and validates them.
+# Links/notes not passed as MAIN= AUDIO= VIDEO= NOTES= are asked for (links via the clipboard).
 release-meta:
-	@python3 scripts/set_release_meta.py --main "$(MAIN)" --audio "$(AUDIO)" --video "$(VIDEO)" --notes "$(NOTES)"
+	@python3 scripts/set_release_meta.py $(if $(MAIN),--main "$(MAIN)") $(if $(AUDIO),--audio "$(AUDIO)") $(if $(VIDEO),--video "$(VIDEO)") $(if $(NOTES),--notes "$(NOTES)")
 
 test-shortcut:
 	@mkdir -p build/tmp
