@@ -10,7 +10,7 @@ Checks, failing loudly before anything is published:
   * the committed SW-DLT*.shortcut files are signed (AEA1) and were committed no
     earlier than the last change to their plist source (i.e. rebuilt on main)
 
-Usage: prepare_release.py [--notes-out FILE]   prints the version on success
+Usage: prepare_release.py [--notes-out FILE] [--skip-commit-check]   prints the version on success
 """
 
 from __future__ import annotations
@@ -61,6 +61,8 @@ def last_commit_time(path: str) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--notes-out", type=Path)
+    parser.add_argument("--skip-commit-check", action="store_true",
+                        help="before committing: don't compare commit times of signed files and plists")
     args = parser.parse_args()
 
     latest_text = LATEST.read_text(encoding="utf-8")
@@ -85,7 +87,7 @@ def main() -> int:
         path = ROOT / signed
         if not path.is_file() or path.read_bytes()[:4] != b"AEA1":
             fail(f"{signed} missing or not signed")
-        if last_commit_time(signed) < last_commit_time(source):
+        if not args.skip_commit_check and last_commit_time(signed) < last_commit_time(source):
             fail(f"{signed} is older than {source}: run `make build` on main and commit it")
 
     if args.notes_out:
