@@ -1,6 +1,6 @@
 {
-  "version": "4.4.0",
-  "url": "https://www.icloud.com/shortcuts/fad1d7ec949a4b8693e1138ee09dc0af",
-  "notes": "4.4.0: Fixes \"There was a problem running the shortcut\" after downloads on iOS/iPadOS 27.2 (files are now returned with the built-in Get File from Folder action, for a-Shell and a-Shell mini). Also fixes the daily update check, \"No module named 'yt_dlp'\" after a fresh install, pip \"invalid distribution\" warnings, and a hang when the cookie file is missing.",
-  "release": "2026-11-12"
+  "version": "4.4.1",
+  "url": "https://www.icloud.com/shortcuts/52e8d30a42214062992a27c43276cd1d",
+  "notes": "4.4.1: Download fixes",
+  "release": "2026-11-14"
 }

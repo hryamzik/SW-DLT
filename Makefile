@@ -28,12 +28,14 @@ build: verify
 	done
 	@rm -rf build/tmp
 
+# Bumps the version first (BUMP=patch|minor|major, default patch) and commits it, unless
+# src/SW-DLT.plist is already newer than the released version; FORCE=1 skips the bump.
 # Production build from any branch: same output as `make build` on main (repo root,
 # script from main), so a release can be prepared in the feature PR itself. On macOS
 # the built files are opened in Shortcuts for import (choose Replace, not Keep Both:
 # a renamed "SW-DLT 2" would break the quick shortcuts and the download callback).
 release:
-	@$(if $(FORCE),,python3 scripts/set_release_meta.py --check-bump)
+	@$(if $(FORCE),,python3 scripts/set_release_meta.py --bump $(or $(BUMP),patch))
 	@$(MAKE) --no-print-directory build BRANCH=main
 	@if command -v open >/dev/null && [ "$$(uname)" = Darwin ]; then \
 	  for name in $(SHORTCUTS); do open "$$name.shortcut"; done; \
