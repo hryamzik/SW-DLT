@@ -59,6 +59,17 @@ See [Docs.md](Docs.md) for full feature documentation.
 
 **NOTE**: if you do not want to use a remote service to sign the shortcut, nor have access to a Mac, you can still preview the source code as Shortcuts actions. Follow the first two steps of build instructions, then from the iPhone/iPad Files app hold on the .shortcut file, then press on the QuickLook option.
 
+## Releasing
+Releases are published by `.github/workflows/release.yml` when a new `api/updates/latest.json` lands on `main`; it can all happen in the feature PR:
+
+1. Bump the version in `src/SW-DLT.plist` and commit.
+2. `make release` — refuses if the version wasn't bumped (`FORCE=1` to rebuild the same version), then builds the production shortcuts into the repo root (script from `main`, same as `make build` on `main`).
+3. Import the root `SW-DLT*.shortcut` files on a device and copy the three iCloud links.
+4. `make release-meta MAIN=<link> AUDIO=<link> VIDEO=<link> NOTES="what changed"` — writes `latest.json` and `release_links.json` and validates them.
+5. Commit the signed shortcuts and `api/updates/*.json`. Merging publishes `v<version>` with the shortcuts attached; installed shortcuts offer the update within a day.
+
+Note: a production build installs `SW_DLT.py` from `main`, so test script changes with a branch build (`make build`) before merging.
+
 ## Roadmap Features
 
 - [ ] Implement full progress bar on gallery-dl downloads

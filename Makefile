@@ -7,7 +7,7 @@ OUT := $(if $(filter main,$(BRANCH)),.,build)
 SHORTCUTS := SW-DLT SW-DLT-Audio SW-DLT-Video-720p
 SIGN = shortcuts sign --mode people-who-know-me
 
-.PHONY: verify test check-urls build test-shortcut clean
+.PHONY: verify test check-urls build release release-meta test-shortcut clean
 
 verify:
 	@python3 scripts/verify_shortcut_shell.py
@@ -27,6 +27,19 @@ build: verify
 	  echo "signed $(OUT)/$$name.shortcut" || exit 1; \
 	done
 	@rm -rf build/tmp
+
+# Production build from any branch: same output as `make build` on main (repo root,
+# script from main), so a release can be prepared in the feature PR itself.
+release:
+	@$(if $(FORCE),,python3 scripts/set_release_meta.py --check-bump)
+	@$(MAKE) --no-print-directory build BRANCH=main
+	@echo
+	@echo "Next: import the root SW-DLT*.shortcut files on a device, copy their iCloud links, then"
+	@echo '  make release-meta MAIN=<link> AUDIO=<link> VIDEO=<link> NOTES="what changed"'
+
+# Writes api/updates/latest.json + release_links.json for the plist version and validates them.
+release-meta:
+	@python3 scripts/set_release_meta.py --main "$(MAIN)" --audio "$(AUDIO)" --video "$(VIDEO)" --notes "$(NOTES)"
 
 test-shortcut:
 	@mkdir -p build/tmp
